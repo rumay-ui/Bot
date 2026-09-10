@@ -6,7 +6,8 @@
   <meta name="theme-color" content="#0a0000">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
-  <title>DDoS Attack Panel v4.2</title>
+  <meta name="description" content="Network Load Tester UI - Educational Dashboard">
+  <title>Network Load Tester v4.2</title>
   <style>
     * {
       margin: 0;
@@ -888,7 +889,7 @@
   <!-- BOOT SCREEN -->
   <div class="boot-screen" id="bootScreen">
     <div class="boot-logo">💀</div>
-    <div class="boot-title">DDoS PANEL v4.2</div>
+    <div class="boot-title">LOAD TESTER v4.2</div>
     <div class="boot-log" id="bootLog"></div>
     <div class="boot-progress">
       <div class="boot-progress-fill" id="bootProgress"></div>
@@ -904,7 +905,7 @@
       <div class="header-left">
         <div class="skull-icon">💀</div>
         <div class="title-wrap">
-          <div class="title">DDoS <span>PANEL</span></div>
+          <div class="title">LOAD <span>TESTER</span></div>
           <div class="title-sub">v4.2 // MOBILE EDITION</div>
         </div>
       </div>
@@ -924,16 +925,16 @@
 
     <!-- TARGET -->
     <div class="target-box">
-      <div class="target-label">🎯 TARGET</div>
+      <div class="target-label">🎯 ENDPOINT</div>
       <div class="target-row">
-        <input type="text" id="targetInput" placeholder="target.com / IP" value="example.com" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        <input type="text" id="targetInput" placeholder="endpoint.com / IP" value="example.com" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
         <button id="setTargetBtn">SET</button>
       </div>
     </div>
 
     <!-- METHOD SELECTOR -->
     <div class="method-box">
-      <div class="method-label">⚙️ ATTACK METHOD</div>
+      <div class="method-label">⚙️ TEST METHOD</div>
       <div class="method-grid">
         <button class="method-btn active" data-method="HTTP">HTTP</button>
         <button class="method-btn" data-method="UDP">UDP</button>
@@ -997,7 +998,7 @@
     <!-- LOG -->
     <div class="log-box" id="logBox">
       <div class="log-entry ok">[SYSTEM] Panel aktif...</div>
-      <div class="log-entry info">[INFO] Masukkan target lalu SET.</div>
+      <div class="log-entry info">[INFO] Masukkan endpoint lalu SET.</div>
     </div>
 
     <!-- TOMBOL KONTROL -->
@@ -1017,10 +1018,10 @@
         <div class="mini-panel-row">SUCCESS <span class="val" id="successRateDisplay">0%</span></div>
       </div>
       <div class="mini-panel">
-        <div class="mini-panel-title">🛡️ TARGET</div>
+        <div class="mini-panel-title">🛡️ ENDPOINT</div>
         <div class="mini-panel-row">HTTP CODE <span class="val" id="httpCodeDisplay">---</span></div>
         <div class="mini-panel-row">LOAD <span class="val" id="serverLoadDisplay">0%</span></div>
-        <div class="mini-panel-row">FIREWALL <span class="val" id="firewallDisplay">UNKNOWN</span></div>
+        <div class="mini-panel-row">SECURITY <span class="val" id="firewallDisplay">UNKNOWN</span></div>
       </div>
       <div class="mini-panel">
         <div class="mini-panel-title">⚡ RESOURCE</div>
@@ -1033,7 +1034,7 @@
     <!-- FOOTER -->
     <div class="footer">
       <strong>⚠️ PERINGATAN:</strong> Hanya antarmuka visual. Tidak ada serangan nyata.
-      <span class="marquee">▬▬ DDoS PANEL v4.2 // MOBILE EDITION // EDUCATIONAL ONLY // NO REAL ATTACK ▬▬</span>
+      <span class="marquee">▬▬ LOAD TESTER v4.2 // MOBILE EDITION // EDUCATIONAL ONLY // NO REAL TRAFFIC ▬▬</span>
     </div>
   </div>
 
@@ -1070,7 +1071,6 @@
       let uptimeSeconds = 0;
       let uptimeInterval = null;
       let pingInterval = null;
-      let chartInterval = null;
 
       // Chart data
       const chartData = [];
@@ -1164,6 +1164,7 @@
         const dpr = window.devicePixelRatio || 1;
         chartCanvas.width = rect.width * dpr;
         chartCanvas.height = rect.height * dpr;
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.scale(dpr, dpr);
         drawChart();
       }
@@ -1343,7 +1344,7 @@
         logBox.innerHTML = '';
         logCountEl.textContent = '0';
         addLog('[SYSTEM] Panel direset. Siap digunakan.', 'ok');
-        addLog('[INFO] Masukkan target lalu tekan SET.', 'info');
+        addLog('[INFO] Masukkan endpoint lalu tekan SET.', 'info');
         addLog('[INFO] Pilih method lalu tekan START.', 'info');
       }
 
@@ -1402,14 +1403,14 @@
         if (Math.random() < 0.15) {
           const messages = [
             { msg: `Mengirim paket ke ${target} ... ${currentPps} pps`, type: 'info' },
-            { msg: `Flooding ${target} dengan ${threadCount} thread`, type: 'info' },
-            { msg: `Beban target: ${loadPercent}%`, type: 'info' },
+            { msg: `Load testing ${target} dengan ${threadCount} thread`, type: 'info' },
+            { msg: `Beban endpoint: ${loadPercent}%`, type: 'info' },
             { msg: `Paket terkirim: ${packetsThisTick} dalam 100ms`, type: 'info' },
-            { msg: `Memperkuat serangan ke ${target}...`, type: 'warn' },
+            { msg: `Memperkuat test ke ${target}...`, type: 'warn' },
             { msg: `Method: ${method} | Bandwidth: ${bandwidth} Mbps`, type: 'info' },
-            { msg: `Response target: ${responseTime}ms`, type: 'warn' },
+            { msg: `Response endpoint: ${responseTime}ms`, type: 'warn' },
             { msg: `HTTP ${httpCode} dari ${target}`, type: httpCode === '200' ? 'ok' : 'warn' },
-            { msg: `Firewall: ${firewall}`, type: firewall === 'BYPASSED' ? 'ok' : 'warn' },
+            { msg: `Security: ${firewall}`, type: firewall === 'BYPASSED' ? 'ok' : 'warn' },
             { msg: `Thread pool: ${threadCount} aktif`, type: 'info' },
             { msg: `Connection aktif: ${activeConn}`, type: 'info' },
             { msg: `Gagal koneksi: ${failedConn}`, type: 'warn' },
@@ -1419,11 +1420,11 @@
         }
 
         if (progress >= 100 && Math.random() < 0.15) {
-          addLog(`⚠️ TARGET ${target} TIDAK MERESPON`, 'error');
+          addLog(`⚠️ ENDPOINT ${target} TIDAK MERESPON`, 'error');
         }
 
         if (loadPercent >= 95 && Math.random() < 0.1) {
-          addLog(`💀 TARGET ${target} DOWN`, 'error');
+          addLog(`💀 ENDPOINT ${target} DOWN`, 'error');
           showToast(`💀 ${target} DOWN`);
         }
       }
@@ -1434,20 +1435,20 @@
       function startAttack() {
         if (isRunning) return;
         if (!target || target.trim() === '') {
-          addLog('ERROR: Target tidak boleh kosong!', 'error');
-          showToast('⚠️ Target kosong!');
+          addLog('ERROR: Endpoint tidak boleh kosong!', 'error');
+          showToast('⚠️ Endpoint kosong!');
           return;
         }
         isRunning = true;
         startBtn.disabled = true;
         stopBtn.disabled = false;
-        setStatus('ATTACKING', true);
-        showToast('🚀 Attack started');
+        setStatus('TESTING', true);
+        showToast('🚀 Test started');
 
-        addLog(`🚀 Memulai serangan ke ${target} ...`, 'warn');
+        addLog(`🚀 Memulai load test ke ${target} ...`, 'warn');
         addLog(`🔧 Method: ${method} | Threads: auto`, 'info');
-        addLog(`📡 Node: 127.0.0.1 | Resolving target...`, 'info');
-        addLog(`✅ Target resolved: ${randomIP()}`, 'ok');
+        addLog(`📡 Node: 127.0.0.1 | Resolving endpoint...`, 'info');
+        addLog(`✅ Endpoint resolved: ${randomIP()}`, 'ok');
         addLog(`⚡ Membuka ${Math.floor(Math.random()*50+50)} koneksi paralel...`, 'info');
 
         if (intervalId) clearInterval(intervalId);
@@ -1464,8 +1465,8 @@
         startBtn.disabled = false;
         stopBtn.disabled = true;
         setStatus('IDLE', true);
-        addLog(`⏸️ Serangan dihentikan. Total paket: ${fmt(packetCounter)}`, 'warn');
-        showToast('⏹ Attack stopped');
+        addLog(`⏸️ Test dihentikan. Total paket: ${fmt(packetCounter)}`, 'warn');
+        showToast('⏹ Test stopped');
       }
 
       // ==========================================
@@ -1474,15 +1475,15 @@
       function setTarget() {
         const newTarget = targetInput.value.trim();
         if (newTarget === '') {
-          addLog('Target tidak valid. Masukkan domain atau IP.', 'error');
-          showToast('⚠️ Target invalid');
+          addLog('Endpoint tidak valid. Masukkan domain atau IP.', 'error');
+          showToast('⚠️ Endpoint invalid');
           return;
         }
         target = newTarget;
         ipDisplay.textContent = randomIP();
-        addLog(`🎯 Target dikonfigurasi: ${target}`, 'ok');
+        addLog(`🎯 Endpoint dikonfigurasi: ${target}`, 'ok');
         addLog(`🌐 Resolved IP: ${ipDisplay.textContent}`, 'info');
-        showToast('🎯 Target set');
+        showToast('🎯 Endpoint set');
         targetInput.blur();
       }
 
@@ -1491,12 +1492,12 @@
       // ==========================================
       function exportLog() {
         const entries = Array.from(logBox.children).map(el => el.textContent);
-        const header = `=== DDoS PANEL v4.2 LOG ===\nTarget: ${target}\nMethod: ${method}\nTotal Paket: ${packetCounter}\nDate: ${new Date().toLocaleString('id-ID')}\n\n`;
+        const header = `=== LOAD TESTER v4.2 LOG ===\nEndpoint: ${target}\nMethod: ${method}\nTotal Paket: ${packetCounter}\nDate: ${new Date().toLocaleString('id-ID')}\n\n`;
         const blob = new Blob([header + entries.join('\n')], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `ddos-log-${Date.now()}.txt`;
+        a.download = `loadtest-log-${Date.now()}.txt`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -1515,7 +1516,7 @@
           '[ OK ] Mounting filesystem...',
           '[ OK ] Starting services...',
           '[ OK ] Connecting to node 127.0.0.1...',
-          '[ OK ] Loading attack methods...',
+          '[ OK ] Loading test methods...',
           '[ OK ] Establishing secure channel...',
           '[ OK ] System ready.',
         ];
@@ -1563,7 +1564,7 @@
         resetBtn.addEventListener('click', () => {
           resetState();
           targetInput.value = target;
-          addLog(`Target aktif: ${target}`, 'info');
+          addLog(`Endpoint aktif: ${target}`, 'info');
           showToast('⟲ Reset done');
         });
         exportBtn.addEventListener('click', exportLog);
@@ -1588,7 +1589,7 @@
 
         // Initial logs
         addLog('Panel dimuat. Sistem siap.', 'ok');
-        addLog('Menunggu konfigurasi target...', 'info');
+        addLog('Menunggu konfigurasi endpoint...', 'info');
 
         // Boot animation
         runBootSequence();
