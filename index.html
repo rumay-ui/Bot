@@ -3,12 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#0a0000">
+  <meta name="theme-color" content="#001a00">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="description" content="Network Load Tester UI - Educational Dashboard">
-  <title>Network Load Tester v4.2</title>
+  <title>Network Load Tester v6.0 // GREEN MATRIX EDITION</title>
   <style>
+    /* ============================================================
+       SECTION 01: RESET & BASE
+       ============================================================ */
     * {
       margin: 0;
       padding: 0;
@@ -20,52 +23,231 @@
     html, body {
       width: 100%;
       min-height: 100vh;
-      background: #0a0000;
+      background: #001a00;
       overflow-x: hidden;
     }
 
+    /* ============================================================
+       SECTION 02: BODY - GREEN ANIMATED BACKGROUND
+       ============================================================ */
     body {
+      background: #001a00;
       background-image:
-        repeating-linear-gradient(0deg, rgba(255,0,0,0.03) 0px, rgba(255,0,0,0.03) 1px, transparent 1px, transparent 3px),
-        radial-gradient(circle at 50% 20%, #1a0000, #050000);
+        repeating-linear-gradient(0deg, rgba(0,255,0,0.03) 0px, rgba(0,255,0,0.03) 1px, transparent 1px, transparent 3px),
+        radial-gradient(circle at 50% 20%, #003300, #000a00);
       display: flex;
       justify-content: center;
       align-items: flex-start;
       padding: 8px 6px 30px;
-      color: #ffcccc;
+      color: #ccffcc;
       font-size: 14px;
       touch-action: manipulation;
+      position: relative;
+      animation: bgShift 20s ease-in-out infinite alternate;
     }
 
-    /* === PANEL UTAMA === */
+    @keyframes bgShift {
+      0% {
+        background-image:
+          repeating-linear-gradient(0deg, rgba(0,255,0,0.03) 0px, rgba(0,255,0,0.03) 1px, transparent 1px, transparent 3px),
+          radial-gradient(circle at 30% 20%, #003300, #000a00);
+      }
+      50% {
+        background-image:
+          repeating-linear-gradient(0deg, rgba(0,255,0,0.05) 0px, rgba(0,255,0,0.05) 1px, transparent 1px, transparent 4px),
+          radial-gradient(circle at 70% 40%, #004400, #000a00);
+      }
+      100% {
+        background-image:
+          repeating-linear-gradient(0deg, rgba(0,255,0,0.03) 0px, rgba(0,255,0,0.03) 1px, transparent 1px, transparent 3px),
+          radial-gradient(circle at 50% 80%, #005500, #000a00);
+      }
+    }
+
+    /* ============================================================
+       SECTION 03: MATRIX RAIN CANVAS
+       ============================================================ */
+    #matrixCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    /* ============================================================
+       SECTION 04: FLOATING PARTICLES
+       ============================================================ */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: #00ff66;
+      border-radius: 50%;
+      box-shadow: 0 0 6px #00ff66, 0 0 12px #00ff66;
+      animation: floatUp linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh) translateX(0);
+        opacity: 0;
+      }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% {
+        transform: translateY(-100px) translateX(20px);
+        opacity: 0;
+      }
+    }
+
+    /* ============================================================
+       SECTION 05: GRID OVERLAY PERSPECTIVE
+       ============================================================ */
+    .grid-overlay {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 40vh;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(0deg, rgba(0,255,0,0.15) 0%, transparent 100%),
+        repeating-linear-gradient(90deg, rgba(0,255,102,0.15) 0px, rgba(0,255,102,0.15) 1px, transparent 1px, transparent 40px);
+      transform: perspective(300px) rotateX(60deg);
+      transform-origin: bottom;
+      animation: gridMove 10s linear infinite;
+    }
+
+    @keyframes gridMove {
+      0% { background-position: 0 0; }
+      100% { background-position: 0 40px; }
+    }
+
+    /* ============================================================
+       SECTION 06: GLOW ORBS
+       ============================================================ */
+    .glow-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    .glow-orb.orb-1 {
+      width: 200px;
+      height: 200px;
+      background: #00ff66;
+      top: 10%;
+      left: -50px;
+      animation: orbFloat1 15s ease-in-out infinite;
+    }
+
+    .glow-orb.orb-2 {
+      width: 250px;
+      height: 250px;
+      background: #00cc44;
+      bottom: 10%;
+      right: -80px;
+      animation: orbFloat2 18s ease-in-out infinite;
+    }
+
+    .glow-orb.orb-3 {
+      width: 150px;
+      height: 150px;
+      background: #00ff99;
+      top: 50%;
+      left: 50%;
+      animation: orbFloat3 20s ease-in-out infinite;
+    }
+
+    @keyframes orbFloat1 {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(80px, 40px); }
+    }
+
+    @keyframes orbFloat2 {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(-60px, -50px); }
+    }
+
+    @keyframes orbFloat3 {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-40%, -60%) scale(1.2); }
+    }
+
+    /* ============================================================
+       SECTION 07: SCANLINE OVERLAY
+       ============================================================ */
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 255, 0, 0.04) 0px,
+        rgba(0, 255, 0, 0.04) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      animation: scanMove 8s linear infinite;
+    }
+
+    @keyframes scanMove {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(3px); }
+    }
+
+    /* ============================================================
+       SECTION 08: PANEL UTAMA (FIXED - NO ::after OVERLAY)
+       ============================================================ */
     .panel {
       width: 100%;
       max-width: 480px;
-      background: #1a0505;
-      border: 2px solid #ff1a1a;
+      background: #001a00;
+      border: 2px solid #00ff44;
       border-radius: 0;
       padding: 12px;
       box-shadow:
         0 0 0 2px #000,
-        0 0 20px #ff0000,
-        inset 0 0 25px rgba(255, 0, 0, 0.15);
+        0 0 20px #00ff44,
+        inset 0 0 25px rgba(0, 255, 68, 0.15);
       position: relative;
+      z-index: 10;
       animation: panelPulse 3s infinite alternate;
     }
 
     @keyframes panelPulse {
-      0% { box-shadow: 0 0 0 2px #000, 0 0 15px #ff0000, inset 0 0 20px rgba(255, 0, 0, 0.1); }
-      100% { box-shadow: 0 0 0 2px #000, 0 0 30px #ff0000, inset 0 0 35px rgba(255, 0, 0, 0.2); }
+      0% { box-shadow: 0 0 0 2px #000, 0 0 15px #00ff44, inset 0 0 20px rgba(0, 255, 68, 0.1); }
+      100% { box-shadow: 0 0 0 2px #000, 0 0 30px #00ff44, inset 0 0 35px rgba(0, 255, 68, 0.2); }
     }
 
-    .panel::before {
-      content: "";
+    /* Inner scanline overlay (bukan ::after, biar aman) */
+    .panel-scanlines {
       position: absolute;
       inset: 0;
       background: repeating-linear-gradient(
         0deg,
-        rgba(255, 0, 0, 0.05) 0px,
-        rgba(255, 0, 0, 0.05) 1px,
+        rgba(0, 255, 0, 0.05) 0px,
+        rgba(0, 255, 0, 0.05) 1px,
         transparent 1px,
         transparent 4px
       );
@@ -73,7 +255,141 @@
       z-index: 0;
     }
 
-    /* === HEADER === */
+    /* Semua konten panel di atas overlay */
+    .panel > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ============================================================
+       SECTION 09: BANNER VIDEO
+       ============================================================ */
+    .banner-box {
+      width: 100%;
+      margin-bottom: 10px;
+      background: #000a00;
+      border: 2px solid #00ff44;
+      box-shadow:
+        0 0 15px rgba(0, 255, 68, 0.7),
+        inset 0 0 15px rgba(0, 0, 0, 0.8);
+      position: relative;
+      overflow: hidden;
+      animation: bannerPulse 2s infinite alternate;
+    }
+
+    @keyframes bannerPulse {
+      0% { box-shadow: 0 0 15px rgba(0, 255, 68, 0.5), inset 0 0 15px rgba(0,0,0,0.8); }
+      100% { box-shadow: 0 0 30px rgba(0, 255, 68, 0.9), inset 0 0 20px rgba(0,255,68,0.2); }
+    }
+
+    .banner-video {
+      width: 100%;
+      height: auto;
+      display: block;
+      background: #000;
+      filter: contrast(1.15) saturate(0.8) hue-rotate(60deg);
+    }
+
+    .banner-overlay {
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          rgba(0, 255, 0, 0.08) 0px,
+          rgba(0, 255, 0, 0.08) 1px,
+          transparent 1px,
+          transparent 3px
+        ),
+        linear-gradient(180deg, transparent 60%, rgba(0,255,68,0.25) 100%);
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+
+    .banner-text {
+      position: absolute;
+      bottom: 6px;
+      left: 8px;
+      right: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #00ff44;
+      font-size: 0.6rem;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      text-shadow: 0 0 6px #00ff44, 0 0 12px #00ff44;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .banner-text .live-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: #00ff44;
+      border-radius: 50%;
+      margin-right: 5px;
+      box-shadow: 0 0 8px #00ff44;
+      animation: liveBlink 0.8s infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes liveBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+
+    .banner-corner {
+      position: absolute;
+      top: 4px;
+      right: 6px;
+      color: #00ff66;
+      font-size: 0.55rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-shadow: 0 0 6px #00ff44;
+      background: rgba(0,0,0,0.6);
+      padding: 2px 6px;
+      border: 1px solid #00ff44;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .banner-sound-btn {
+      position: absolute;
+      top: 4px;
+      left: 6px;
+      background: rgba(0,0,0,0.75);
+      border: 1px solid #00ff44;
+      color: #00ff44;
+      font-size: 0.55rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+      padding: 3px 7px;
+      cursor: pointer;
+      z-index: 3;
+      text-shadow: 0 0 4px #00ff44;
+      font-family: 'Courier New', monospace;
+      transition: all 0.15s;
+    }
+
+    .banner-sound-btn:hover {
+      background: #004400;
+      color: #00ff88;
+      box-shadow: 0 0 10px #00ff44;
+    }
+
+    .banner-sound-btn.on {
+      background: #00cc44;
+      color: #000000;
+      border-color: #ffffff;
+      box-shadow: 0 0 12px #00ff44;
+    }
+
+    /* ============================================================
+       SECTION 10: HEADER
+       ============================================================ */
     .header {
       display: flex;
       align-items: center;
@@ -81,11 +397,9 @@
       gap: 8px;
       margin-bottom: 10px;
       padding: 8px 10px;
-      background: #400000;
-      border: 2px solid #ff1a1a;
-      box-shadow: 0 0 12px rgba(255, 0, 0, 0.6), inset 0 0 12px rgba(0,0,0,0.6);
-      position: relative;
-      z-index: 1;
+      background: #004400;
+      border: 2px solid #00ff44;
+      box-shadow: 0 0 12px rgba(0, 255, 68, 0.6), inset 0 0 12px rgba(0,0,0,0.6);
     }
 
     .header-left {
@@ -98,7 +412,7 @@
 
     .skull-icon {
       font-size: 1.5rem;
-      filter: drop-shadow(0 0 6px #ff0000);
+      filter: drop-shadow(0 0 6px #00ff44);
       animation: skullBlink 2s infinite;
       flex-shrink: 0;
     }
@@ -118,24 +432,33 @@
       font-weight: 900;
       letter-spacing: 2px;
       text-transform: uppercase;
-      color: #ff2222;
+      color: #00ff44;
       text-shadow:
-        0 0 4px #ff0000,
-        0 0 10px #ff0000,
-        0 0 18px #990000;
+        0 0 4px #00ff44,
+        0 0 10px #00ff44,
+        0 0 18px #006622;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      animation: textFlicker 4s infinite;
+    }
+
+    @keyframes textFlicker {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.85; }
+      55% { opacity: 1; }
+      60% { opacity: 0.7; }
+      65% { opacity: 1; }
     }
 
     .title span {
       color: #ffffff;
-      text-shadow: 0 0 6px #ff0000, 0 0 14px #ff0000;
+      text-shadow: 0 0 6px #00ff44, 0 0 14px #00ff44;
     }
 
     .title-sub {
       font-size: 0.55rem;
-      color: #ff8888;
+      color: #66ff99;
       letter-spacing: 2px;
       font-weight: 700;
     }
@@ -145,14 +468,14 @@
       align-items: center;
       gap: 5px;
       padding: 5px 8px;
-      background: #0d0000;
-      border: 2px solid #ff1a1a;
+      background: #000a00;
+      border: 2px solid #00ff44;
       font-size: 0.6rem;
       font-weight: 900;
       letter-spacing: 1px;
-      color: #ff4444;
-      text-shadow: 0 0 6px #ff0000;
-      box-shadow: 0 0 10px rgba(255,0,0,0.5), inset 0 0 8px rgba(0,0,0,0.8);
+      color: #00ff66;
+      text-shadow: 0 0 6px #00ff44;
+      box-shadow: 0 0 10px rgba(0,255,68,0.5), inset 0 0 8px rgba(0,0,0,0.8);
       white-space: nowrap;
       flex-shrink: 0;
     }
@@ -168,8 +491,8 @@
     }
 
     .status-dot.offline {
-      background: #ff0000;
-      box-shadow: 0 0 8px #ff0000, 0 0 15px #ff0000;
+      background: #ff4444;
+      box-shadow: 0 0 8px #ff4444, 0 0 15px #ff4444;
     }
 
     @keyframes dotBlink {
@@ -177,20 +500,20 @@
       50% { opacity: 0.4; }
     }
 
-    /* === INFO BAR === */
+    /* ============================================================
+       SECTION 11: INFO BAR
+       ============================================================ */
     .info-bar {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 5px;
       margin-bottom: 10px;
       padding: 8px;
-      background: #0d0000;
-      border: 2px solid #ff1a1a;
-      box-shadow: 0 0 10px rgba(255, 0, 0, 0.4), inset 0 0 10px rgba(0,0,0,0.8);
-      position: relative;
-      z-index: 1;
+      background: #000a00;
+      border: 2px solid #00ff44;
+      box-shadow: 0 0 10px rgba(0, 255, 68, 0.4), inset 0 0 10px rgba(0,0,0,0.8);
       font-size: 0.6rem;
-      color: #ff7777;
+      color: #66ff99;
       letter-spacing: 0.5px;
       font-weight: 700;
     }
@@ -200,40 +523,40 @@
       align-items: center;
       gap: 4px;
       padding: 3px 5px;
-      border: 1px solid #400000;
-      background: #1a0000;
+      border: 1px solid #004400;
+      background: #001a00;
       overflow: hidden;
       white-space: nowrap;
     }
 
     .info-item .val {
-      color: #ff2222;
-      text-shadow: 0 0 6px #ff0000;
+      color: #00ff44;
+      text-shadow: 0 0 6px #00ff44;
       font-weight: 900;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    /* === TARGET INPUT === */
+    /* ============================================================
+       SECTION 12: TARGET INPUT
+       ============================================================ */
     .target-box {
       display: flex;
       flex-direction: column;
       gap: 6px;
       margin-bottom: 10px;
-      background: #2a0000;
+      background: #002a00;
       padding: 8px;
-      border: 2px solid #ff1a1a;
-      box-shadow: 0 0 12px rgba(255, 0, 0, 0.5), inset 0 0 12px rgba(0,0,0,0.8);
-      position: relative;
-      z-index: 1;
+      border: 2px solid #00ff44;
+      box-shadow: 0 0 12px rgba(0, 255, 68, 0.5), inset 0 0 12px rgba(0,0,0,0.8);
     }
 
     .target-label {
       font-size: 0.6rem;
-      color: #ff8888;
+      color: #66ff99;
       font-weight: 900;
       letter-spacing: 1.5px;
-      text-shadow: 0 0 4px #ff0000;
+      text-shadow: 0 0 4px #00ff44;
     }
 
     .target-row {
@@ -244,75 +567,75 @@
     .target-box input {
       flex: 1;
       min-width: 0;
-      background: #0d0000;
-      border: 2px solid #ff1a1a;
+      background: #000a00;
+      border: 2px solid #00ff44;
       outline: none;
-      color: #ff5555;
+      color: #00ff44;
       font-size: 0.85rem;
       font-weight: 700;
       padding: 10px 10px;
       letter-spacing: 1px;
       font-family: 'Courier New', monospace;
-      text-shadow: 0 0 6px #ff0000;
-      box-shadow: inset 0 0 12px rgba(255, 0, 0, 0.2);
+      text-shadow: 0 0 6px #00ff44;
+      box-shadow: inset 0 0 12px rgba(0, 255, 68, 0.2);
     }
 
     .target-box input::placeholder {
-      color: #882222;
+      color: #225522;
       font-style: italic;
       text-shadow: none;
     }
 
     .target-box input:focus {
-      background: #1a0000;
-      box-shadow: 0 0 15px #ff0000, inset 0 0 12px rgba(255,0,0,0.3);
+      background: #001a00;
+      box-shadow: 0 0 15px #00ff44, inset 0 0 12px rgba(0,255,68,0.3);
     }
 
     .target-box button {
-      background: #cc0000;
-      border: 2px solid #ff4444;
+      background: #00cc44;
+      border: 2px solid #00ff88;
       padding: 10px 14px;
       font-weight: 900;
       font-size: 0.75rem;
-      color: #ffffff;
+      color: #000000;
       text-transform: uppercase;
       letter-spacing: 1px;
       cursor: pointer;
       transition: all 0.15s;
-      text-shadow: 0 0 6px #ff0000, 0 1px 0 #000;
-      box-shadow: 0 0 12px #ff0000, inset 0 0 10px rgba(0,0,0,0.4);
+      text-shadow: 0 0 4px #ffffff;
+      box-shadow: 0 0 12px #00ff44, inset 0 0 10px rgba(255,255,255,0.3);
       font-family: 'Courier New', monospace;
       white-space: nowrap;
     }
 
     .target-box button:hover {
-      background: #ff1a1a;
-      box-shadow: 0 0 25px #ff0000, 0 0 40px #ff0000;
+      background: #00ff66;
+      box-shadow: 0 0 25px #00ff44, 0 0 40px #00ff44;
     }
 
     .target-box button:active {
       transform: scale(0.96);
-      background: #990000;
+      background: #009933;
     }
 
-    /* === METHOD SELECTOR === */
+    /* ============================================================
+       SECTION 13: METHOD SELECTOR
+       ============================================================ */
     .method-box {
       margin-bottom: 10px;
-      background: #2a0000;
-      border: 2px solid #ff1a1a;
+      background: #002a00;
+      border: 2px solid #00ff44;
       padding: 8px;
-      box-shadow: 0 0 12px rgba(255, 0, 0, 0.45), inset 0 0 12px rgba(0,0,0,0.6);
-      position: relative;
-      z-index: 1;
+      box-shadow: 0 0 12px rgba(0, 255, 68, 0.45), inset 0 0 12px rgba(0,0,0,0.6);
     }
 
     .method-label {
-      color: #ff8888;
+      color: #66ff99;
       font-size: 0.6rem;
       font-weight: 900;
       letter-spacing: 1.5px;
       margin-bottom: 6px;
-      text-shadow: 0 0 4px #ff0000;
+      text-shadow: 0 0 4px #00ff44;
     }
 
     .method-grid {
@@ -323,16 +646,16 @@
 
     .method-btn {
       padding: 8px 4px;
-      background: #0d0000;
-      border: 2px solid #ff1a1a;
-      color: #ff5555;
+      background: #000a00;
+      border: 2px solid #00ff44;
+      color: #00ff44;
       font-family: 'Courier New', monospace;
       font-weight: 900;
       font-size: 0.6rem;
       letter-spacing: 0.5px;
       cursor: pointer;
       transition: all 0.15s;
-      text-shadow: 0 0 4px #ff0000;
+      text-shadow: 0 0 4px #00ff44;
       text-align: center;
     }
 
@@ -341,55 +664,55 @@
     }
 
     .method-btn.active {
-      background: #cc0000;
+      background: #00cc44;
       border-color: #ffffff;
-      color: #ffffff;
+      color: #000000;
       text-shadow: 0 0 8px #ffffff;
-      box-shadow: 0 0 15px #ff0000, inset 0 0 10px rgba(0,0,0,0.6);
+      box-shadow: 0 0 15px #00ff44, inset 0 0 10px rgba(0,0,0,0.6);
     }
 
-    /* === STATS GRID === */
+    /* ============================================================
+       SECTION 14: STATS GRID
+       ============================================================ */
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 6px;
       margin-bottom: 10px;
-      position: relative;
-      z-index: 1;
     }
 
     .stat-card {
-      background: #2a0000;
-      border: 2px solid #ff1a1a;
+      background: #002a00;
+      border: 2px solid #00ff44;
       padding: 8px 6px;
       text-align: center;
-      box-shadow: 0 0 10px rgba(255, 0, 0, 0.45), inset 0 0 10px rgba(0,0,0,0.6);
+      box-shadow: 0 0 10px rgba(0, 255, 68, 0.45), inset 0 0 10px rgba(0,0,0,0.6);
       transition: all 0.15s;
     }
 
     .stat-card:active {
-      background: #400000;
-      box-shadow: 0 0 20px #ff0000, inset 0 0 15px rgba(255,0,0,0.25);
+      background: #004400;
+      box-shadow: 0 0 20px #00ff44, inset 0 0 15px rgba(0,255,68,0.25);
     }
 
     .stat-label {
       font-size: 0.55rem;
       text-transform: uppercase;
       letter-spacing: 1px;
-      color: #ff8888;
+      color: #66ff99;
       margin-bottom: 4px;
       font-weight: 700;
-      text-shadow: 0 0 4px #ff0000;
+      text-shadow: 0 0 4px #00ff44;
     }
 
     .stat-value {
       font-size: 1.1rem;
       font-weight: 900;
-      color: #ff2222;
+      color: #00ff44;
       text-shadow:
-        0 0 6px #ff0000,
-        0 0 12px #ff0000,
-        0 0 20px #990000;
+        0 0 6px #00ff44,
+        0 0 12px #00ff44,
+        0 0 20px #006622;
       font-family: 'Courier New', monospace;
       line-height: 1.1;
       transition: all 0.1s;
@@ -398,43 +721,43 @@
 
     .stat-value.small {
       font-size: 0.95rem;
-      color: #ff5555;
-      text-shadow: 0 0 6px #ff0000, 0 0 12px #cc0000;
+      color: #00ff66;
+      text-shadow: 0 0 6px #00ff44, 0 0 12px #00cc44;
     }
 
     .stat-value.mini {
       font-size: 0.8rem;
-      color: #ff7777;
-      text-shadow: 0 0 5px #ff0000;
+      color: #66ff99;
+      text-shadow: 0 0 5px #00ff44;
     }
 
-    /* === PROGRESS BAR === */
+    /* ============================================================
+       SECTION 15: PROGRESS BAR
+       ============================================================ */
     .progress-section {
       margin-bottom: 10px;
-      background: #2a0000;
-      border: 2px solid #ff1a1a;
+      background: #002a00;
+      border: 2px solid #00ff44;
       padding: 8px 10px;
-      box-shadow: 0 0 12px rgba(255, 0, 0, 0.45), inset 0 0 12px rgba(0,0,0,0.6);
-      position: relative;
-      z-index: 1;
+      box-shadow: 0 0 12px rgba(0, 255, 68, 0.45), inset 0 0 12px rgba(0,0,0,0.6);
     }
 
     .progress-label {
       display: flex;
       justify-content: space-between;
-      color: #ff7777;
+      color: #66ff99;
       font-size: 0.6rem;
       letter-spacing: 1px;
       margin-bottom: 6px;
       font-weight: 700;
-      text-shadow: 0 0 4px #ff0000;
+      text-shadow: 0 0 4px #00ff44;
     }
 
     .progress-bar-bg {
       width: 100%;
       height: 18px;
-      background: #0d0000;
-      border: 2px solid #ff1a1a;
+      background: #000a00;
+      border: 2px solid #00ff44;
       overflow: hidden;
       box-shadow: inset 0 0 12px #000;
       position: relative;
@@ -457,60 +780,58 @@
     .progress-fill {
       width: 0%;
       height: 100%;
-      background: linear-gradient(90deg, #ff0000, #ff4444, #ff8888);
+      background: linear-gradient(90deg, #00ff44, #00ff88, #88ffaa);
       transition: width 0.2s ease;
-      box-shadow: 0 0 18px #ff0000, inset 0 0 8px #ffffff40;
+      box-shadow: 0 0 18px #00ff44, inset 0 0 8px #ffffff40;
     }
 
-    /* === LOG BOX === */
+    /* ============================================================
+       SECTION 16: LOG BOX
+       ============================================================ */
     .log-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 4px;
       padding: 5px 8px;
-      background: #400000;
-      border: 2px solid #ff1a1a;
-      color: #ff8888;
+      background: #004400;
+      border: 2px solid #00ff44;
+      color: #66ff99;
       font-size: 0.6rem;
       font-weight: 900;
       letter-spacing: 1px;
-      text-shadow: 0 0 4px #ff0000;
-      position: relative;
-      z-index: 1;
+      text-shadow: 0 0 4px #00ff44;
     }
 
     .log-header .count {
-      color: #ff2222;
-      text-shadow: 0 0 6px #ff0000;
+      color: #00ff44;
+      text-shadow: 0 0 6px #00ff44;
     }
 
     .log-box {
-      background: #0d0000;
-      border: 2px solid #ff1a1a;
+      background: #000a00;
+      border: 2px solid #00ff44;
       padding: 8px 10px;
       height: 160px;
       overflow-y: auto;
       font-family: 'Courier New', monospace;
       font-size: 0.68rem;
-      color: #ff7777;
-      box-shadow: 0 0 15px rgba(255, 0, 0, 0.5), inset 0 0 20px #000;
+      color: #66ff99;
+      box-shadow: 0 0 15px rgba(0, 255, 68, 0.5), inset 0 0 20px #000;
       margin-bottom: 10px;
       scrollbar-width: thin;
-      scrollbar-color: #ff1a1a #1a0000;
-      position: relative;
-      z-index: 1;
-      text-shadow: 0 0 4px #ff000080;
+      scrollbar-color: #00ff44 #001a00;
+      text-shadow: 0 0 4px #00ff4480;
       -webkit-overflow-scrolling: touch;
     }
 
     .log-box::-webkit-scrollbar { width: 5px; }
-    .log-box::-webkit-scrollbar-track { background: #1a0000; }
-    .log-box::-webkit-scrollbar-thumb { background: #ff1a1a; }
+    .log-box::-webkit-scrollbar-track { background: #001a00; }
+    .log-box::-webkit-scrollbar-thumb { background: #00ff44; }
 
     .log-entry {
       margin-bottom: 4px;
-      border-left: 2px solid #ff1a1a;
+      border-left: 2px solid #00ff44;
       padding-left: 6px;
       word-break: break-all;
       animation: fadeIn 0.25s;
@@ -525,9 +846,9 @@
     }
 
     .log-entry.error {
-      border-left-color: #ff0000;
-      color: #ff2222;
-      text-shadow: 0 0 6px #ff0000;
+      border-left-color: #ff4444;
+      color: #ff6666;
+      text-shadow: 0 0 6px #ff4444;
       font-weight: 800;
     }
 
@@ -538,9 +859,9 @@
     }
 
     .log-entry.info {
-      border-left-color: #66ccff;
+      border-left-color: #00ccff;
       color: #99ddff;
-      text-shadow: 0 0 4px #66ccff80;
+      text-shadow: 0 0 4px #00ccff80;
     }
 
     @keyframes fadeIn {
@@ -548,13 +869,13 @@
       to { opacity: 1; transform: translateX(0); }
     }
 
-    /* === CONTROL BUTTONS === */
+    /* ============================================================
+       SECTION 17: CONTROL BUTTONS
+       ============================================================ */
     .action-buttons {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 6px;
-      position: relative;
-      z-index: 1;
       margin-bottom: 10px;
     }
 
@@ -572,7 +893,7 @@
       justify-content: center;
       gap: 5px;
       font-family: 'Courier New', monospace;
-      background: #2a0000;
+      background: #002a00;
       text-shadow: 0 0 6px currentColor;
     }
 
@@ -581,16 +902,16 @@
     }
 
     .btn-start {
-      border-color: #ff1a1a;
-      color: #ff3333;
-      box-shadow: 0 0 12px rgba(255, 0, 0, 0.6), inset 0 0 12px rgba(255,0,0,0.15);
+      border-color: #00ff44;
+      color: #00ff44;
+      box-shadow: 0 0 12px rgba(0, 255, 68, 0.6), inset 0 0 12px rgba(0,255,68,0.15);
     }
 
     .btn-start:hover:not(:disabled) {
-      background: #cc0000;
-      color: #ffffff;
+      background: #00cc44;
+      color: #000000;
       text-shadow: 0 0 10px #ffffff;
-      box-shadow: 0 0 25px #ff0000, 0 0 45px #ff0000;
+      box-shadow: 0 0 25px #00ff44, 0 0 45px #00ff44;
     }
 
     .btn-stop {
@@ -601,19 +922,19 @@
 
     .btn-stop:hover:not(:disabled) {
       background: #cc8800;
-      color: #ffffff;
+      color: #000000;
       text-shadow: 0 0 10px #ffffff;
     }
 
     .btn-reset {
-      border-color: #ff5555;
-      color: #ff5555;
-      box-shadow: 0 0 12px rgba(255, 85, 85, 0.5), inset 0 0 12px rgba(255,85,85,0.15);
+      border-color: #00ff88;
+      color: #00ff88;
+      box-shadow: 0 0 12px rgba(0, 255, 136, 0.5), inset 0 0 12px rgba(0,255,136,0.15);
     }
 
     .btn-reset:hover:not(:disabled) {
-      background: #aa0000;
-      color: #ffffff;
+      background: #00aa44;
+      color: #000000;
       text-shadow: 0 0 10px #ffffff;
     }
 
@@ -635,31 +956,31 @@
       box-shadow: none;
     }
 
-    /* === BOTTOM GRID === */
+    /* ============================================================
+       SECTION 18: BOTTOM GRID
+       ============================================================ */
     .bottom-grid {
       display: grid;
       grid-template-columns: 1fr;
       gap: 6px;
       margin-bottom: 10px;
-      position: relative;
-      z-index: 1;
     }
 
     .mini-panel {
-      background: #2a0000;
-      border: 2px solid #ff1a1a;
+      background: #002a00;
+      border: 2px solid #00ff44;
       padding: 8px 10px;
-      box-shadow: 0 0 10px rgba(255, 0, 0, 0.4), inset 0 0 10px rgba(0,0,0,0.6);
+      box-shadow: 0 0 10px rgba(0, 255, 68, 0.4), inset 0 0 10px rgba(0,0,0,0.6);
     }
 
     .mini-panel-title {
-      color: #ff8888;
+      color: #66ff99;
       font-size: 0.6rem;
       font-weight: 900;
       letter-spacing: 1.5px;
       margin-bottom: 6px;
-      text-shadow: 0 0 4px #ff0000;
-      border-bottom: 1px solid #ff1a1a;
+      text-shadow: 0 0 4px #00ff44;
+      border-bottom: 1px solid #00ff44;
       padding-bottom: 4px;
     }
 
@@ -667,11 +988,11 @@
       display: flex;
       justify-content: space-between;
       font-size: 0.65rem;
-      color: #ff7777;
+      color: #66ff99;
       padding: 3px 0;
       letter-spacing: 0.5px;
       font-weight: 600;
-      border-bottom: 1px dashed #400000;
+      border-bottom: 1px dashed #004400;
     }
 
     .mini-panel-row:last-child {
@@ -679,19 +1000,19 @@
     }
 
     .mini-panel-row .val {
-      color: #ff2222;
+      color: #00ff44;
       font-weight: 900;
-      text-shadow: 0 0 5px #ff0000;
+      text-shadow: 0 0 5px #00ff44;
     }
 
-    /* === LIVE CHART === */
+    /* ============================================================
+       SECTION 19: LIVE CHART
+       ============================================================ */
     .chart-box {
-      background: #0d0000;
-      border: 2px solid #ff1a1a;
+      background: #000a00;
+      border: 2px solid #00ff44;
       padding: 6px;
-      box-shadow: 0 0 10px rgba(255, 0, 0, 0.4), inset 0 0 10px rgba(0,0,0,0.6);
-      position: relative;
-      z-index: 1;
+      box-shadow: 0 0 10px rgba(0, 255, 68, 0.4), inset 0 0 10px rgba(0,0,0,0.6);
       margin-bottom: 10px;
     }
 
@@ -699,38 +1020,38 @@
       width: 100%;
       height: 60px;
       display: block;
-      background: #050000;
+      background: #001500;
     }
 
-    /* === FOOTER === */
+    /* ============================================================
+       SECTION 20: FOOTER
+       ============================================================ */
     .footer {
       margin-top: 10px;
       text-align: center;
-      color: #ff8888;
+      color: #66ff99;
       font-size: 0.58rem;
       letter-spacing: 0.8px;
-      background: #2a0000;
-      border: 2px solid #ff1a1a;
+      background: #002a00;
+      border: 2px solid #00ff44;
       padding: 8px 10px;
-      box-shadow: 0 0 12px rgba(255, 0, 0, 0.5), inset 0 0 10px rgba(0,0,0,0.6);
-      position: relative;
-      z-index: 1;
+      box-shadow: 0 0 12px rgba(0, 255, 68, 0.5), inset 0 0 10px rgba(0,0,0,0.6);
       font-weight: 700;
       line-height: 1.5;
       overflow: hidden;
     }
 
     .footer strong {
-      color: #ff2222;
+      color: #00ff44;
       font-weight: 900;
-      text-shadow: 0 0 6px #ff0000;
+      text-shadow: 0 0 6px #00ff44;
     }
 
     .footer .marquee {
       display: block;
       overflow: hidden;
       white-space: nowrap;
-      color: #ff4444;
+      color: #00ff66;
       font-size: 0.55rem;
       margin-top: 5px;
       letter-spacing: 2px;
@@ -742,11 +1063,13 @@
       100% { transform: translateX(-100%); }
     }
 
-    /* === BOOT SCREEN === */
+    /* ============================================================
+       SECTION 21: BOOT SCREEN
+       ============================================================ */
     .boot-screen {
       position: fixed;
       inset: 0;
-      background: #0a0000;
+      background: #001a00;
       z-index: 9999;
       display: flex;
       flex-direction: column;
@@ -754,8 +1077,8 @@
       align-items: center;
       padding: 20px;
       font-family: 'Courier New', monospace;
-      color: #ff4444;
-      text-shadow: 0 0 6px #ff0000;
+      color: #00ff44;
+      text-shadow: 0 0 6px #00ff44;
       transition: opacity 0.5s;
     }
 
@@ -767,7 +1090,7 @@
     .boot-logo {
       font-size: 2.5rem;
       margin-bottom: 20px;
-      filter: drop-shadow(0 0 15px #ff0000);
+      filter: drop-shadow(0 0 15px #00ff44);
       animation: skullBlink 1s infinite;
     }
 
@@ -777,8 +1100,8 @@
       letter-spacing: 3px;
       margin-bottom: 20px;
       text-align: center;
-      color: #ff2222;
-      text-shadow: 0 0 8px #ff0000, 0 0 20px #ff0000;
+      color: #00ff44;
+      text-shadow: 0 0 8px #00ff44, 0 0 20px #00ff44;
     }
 
     .boot-log {
@@ -786,7 +1109,7 @@
       max-width: 320px;
       font-size: 0.7rem;
       line-height: 1.6;
-      color: #ff7777;
+      color: #66ff99;
       text-align: left;
     }
 
@@ -803,8 +1126,8 @@
       width: 100%;
       max-width: 320px;
       height: 8px;
-      background: #1a0000;
-      border: 2px solid #ff1a1a;
+      background: #001a00;
+      border: 2px solid #00ff44;
       margin-top: 20px;
       overflow: hidden;
     }
@@ -812,26 +1135,28 @@
     .boot-progress-fill {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, #ff0000, #ff8888);
-      box-shadow: 0 0 15px #ff0000;
+      background: linear-gradient(90deg, #00ff44, #88ffaa);
+      box-shadow: 0 0 15px #00ff44;
       transition: width 0.3s;
     }
 
-    /* === TOAST NOTIFICATION === */
+    /* ============================================================
+       SECTION 22: TOAST
+       ============================================================ */
     .toast {
       position: fixed;
       bottom: 20px;
       left: 50%;
       transform: translateX(-50%) translateY(100px);
-      background: #2a0000;
-      border: 2px solid #ff1a1a;
+      background: #002a00;
+      border: 2px solid #00ff44;
       padding: 10px 16px;
       font-size: 0.75rem;
       font-weight: 900;
-      color: #ff5555;
+      color: #00ff44;
       letter-spacing: 1px;
-      text-shadow: 0 0 6px #ff0000;
-      box-shadow: 0 0 20px #ff0000, inset 0 0 10px rgba(0,0,0,0.6);
+      text-shadow: 0 0 6px #00ff44;
+      box-shadow: 0 0 20px #00ff44, inset 0 0 10px rgba(0,0,0,0.6);
       z-index: 10000;
       transition: transform 0.3s;
       max-width: 90%;
@@ -843,7 +1168,136 @@
       transform: translateX(-50%) translateY(0);
     }
 
-    /* === RESPONSIVE TWEAKS === */
+    /* ============================================================
+       SECTION 23: SIDE WIDGET - ACTIVITY LOG
+       ============================================================ */
+    .activity-widget {
+      position: fixed;
+      right: 8px;
+      top: 100px;
+      width: 60px;
+      background: #002a00;
+      border: 2px solid #00ff44;
+      padding: 6px 4px;
+      z-index: 5;
+      box-shadow: 0 0 12px rgba(0, 255, 68, 0.6);
+      display: none;
+    }
+
+    @media (min-width: 900px) {
+      .activity-widget {
+        display: block;
+      }
+    }
+
+    .activity-widget-title {
+      font-size: 0.5rem;
+      color: #66ff99;
+      text-align: center;
+      font-weight: 900;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+      border-bottom: 1px solid #00ff44;
+      padding-bottom: 3px;
+    }
+
+    .activity-bar {
+      height: 4px;
+      background: #001a00;
+      margin-bottom: 4px;
+      overflow: hidden;
+      border: 1px solid #004400;
+    }
+
+    .activity-bar-fill {
+      height: 100%;
+      background: #00ff44;
+      transition: width 0.3s;
+      box-shadow: 0 0 6px #00ff44;
+    }
+
+    /* ============================================================
+       SECTION 24: FLOATING ACTION BUTTON
+       ============================================================ */
+    .fab {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 56px;
+      height: 56px;
+      background: #00cc44;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      cursor: pointer;
+      z-index: 9998;
+      box-shadow: 0 0 20px #00ff44, 0 4px 12px rgba(0,0,0,0.5);
+      animation: fabPulse 2s infinite;
+      transition: all 0.15s;
+    }
+
+    .fab:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 35px #00ff44, 0 6px 20px rgba(0,0,0,0.6);
+    }
+
+    .fab:active {
+      transform: scale(0.95);
+    }
+
+    @keyframes fabPulse {
+      0%, 100% { box-shadow: 0 0 20px #00ff44, 0 4px 12px rgba(0,0,0,0.5); }
+      50% { box-shadow: 0 0 35px #00ff44, 0 4px 12px rgba(0,0,0,0.5); }
+    }
+
+    /* ============================================================
+       SECTION 25: KONAMI OVERLAY
+       ============================================================ */
+    .konami-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 26, 0, 0.95);
+      z-index: 99999;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: #00ff44;
+      font-family: 'Courier New', monospace;
+      text-shadow: 0 0 10px #00ff44;
+    }
+
+    .konami-overlay.show {
+      display: flex;
+      animation: konamiFade 0.5s;
+    }
+
+    @keyframes konamiFade {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .konami-title {
+      font-size: 2rem;
+      font-weight: 900;
+      letter-spacing: 4px;
+      margin-bottom: 20px;
+      animation: textFlicker 0.3s infinite;
+    }
+
+    .konami-text {
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+      text-align: center;
+      line-height: 2;
+    }
+
+    /* ============================================================
+       SECTION 26: RESPONSIVE
+       ============================================================ */
     @media (min-width: 400px) {
       .title { font-size: 1.15rem; }
       .stat-value { font-size: 1.3rem; }
@@ -874,7 +1328,9 @@
       .btn { font-size: 0.9rem; }
     }
 
-    /* === SAFE AREA iOS === */
+    /* ============================================================
+       SECTION 27: SAFE AREA iOS
+       ============================================================ */
     @supports (padding: max(0px)) {
       body {
         padding-left: max(6px, env(safe-area-inset-left));
@@ -882,14 +1338,98 @@
         padding-bottom: max(30px, env(safe-area-inset-bottom));
       }
     }
+
+    /* ============================================================
+       SECTION 28: EXTRA ANIMATIONS
+       ============================================================ */
+    @keyframes glowPulse {
+      0%, 100% { filter: drop-shadow(0 0 4px #00ff44); }
+      50% { filter: drop-shadow(0 0 12px #00ff44); }
+    }
+
+    @keyframes borderGlow {
+      0% { filter: brightness(1); }
+      100% { filter: brightness(1.5); }
+    }
+
+    /* Corner brackets */
+    .corner-tl, .corner-tr, .corner-bl, .corner-br {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border-color: #00ff44;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .corner-tl {
+      top: -2px;
+      left: -2px;
+      border-top: 3px solid #00ff44;
+      border-left: 3px solid #00ff44;
+    }
+
+    .corner-tr {
+      top: -2px;
+      right: -2px;
+      border-top: 3px solid #00ff44;
+      border-right: 3px solid #00ff44;
+    }
+
+    .corner-bl {
+      bottom: -2px;
+      left: -2px;
+      border-bottom: 3px solid #00ff44;
+      border-left: 3px solid #00ff44;
+    }
+
+    .corner-br {
+      bottom: -2px;
+      right: -2px;
+      border-bottom: 3px solid #00ff44;
+      border-right: 3px solid #00ff44;
+    }
+
+    /* ============================================================
+       SECTION 29: SCROLLBAR GLOBAL
+       ============================================================ */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #001a00; }
+    ::-webkit-scrollbar-thumb { background: #00ff44; border-radius: 0; }
+    ::-webkit-scrollbar-thumb:hover { background: #00ff88; }
+
+    /* ============================================================
+       SECTION 30: SELECTION
+       ============================================================ */
+    ::selection {
+      background: #00ff44;
+      color: #000000;
+    }
   </style>
 </head>
 <body>
 
+  <!-- MATRIX RAIN CANVAS -->
+  <canvas id="matrixCanvas"></canvas>
+
+  <!-- FLOATING PARTICLES -->
+  <div class="particles" id="particles"></div>
+
+  <!-- GRID OVERLAY -->
+  <div class="grid-overlay"></div>
+
+  <!-- GLOW ORBS -->
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+  <div class="glow-orb orb-3"></div>
+
+  <!-- SCANLINES -->
+  <div class="scanlines"></div>
+
   <!-- BOOT SCREEN -->
   <div class="boot-screen" id="bootScreen">
     <div class="boot-logo">💀</div>
-    <div class="boot-title">LOAD TESTER v4.2</div>
+    <div class="boot-title">LOAD TESTER v6.0</div>
     <div class="boot-log" id="bootLog"></div>
     <div class="boot-progress">
       <div class="boot-progress-fill" id="bootProgress"></div>
@@ -899,14 +1439,55 @@
   <!-- TOAST -->
   <div class="toast" id="toast"></div>
 
+  <!-- KONAMI OVERLAY -->
+  <div class="konami-overlay" id="konamiOverlay">
+    <div class="konami-title">🎮 CHEAT ACTIVATED</div>
+    <div class="konami-text">
+      UNLIMITED POWER MODE<br>
+      <span style="color:#ffffff">> TAP TO CONTINUE <</span>
+    </div>
+  </div>
+
   <div class="panel">
+    <!-- Corner brackets -->
+    <div class="corner-tl"></div>
+    <div class="corner-tr"></div>
+    <div class="corner-bl"></div>
+    <div class="corner-br"></div>
+
+    <!-- Inner scanline overlay -->
+    <div class="panel-scanlines"></div>
+
+    <!-- BANNER VIDEO -->
+    <div class="banner-box">
+      <video
+        class="banner-video"
+        id="bannerVideo"
+        autoplay
+        loop
+        muted
+        playsinline
+        preload="auto"
+        crossorigin="anonymous">
+        <source src="https://files.catbox.moe/lzvfvy.mp4" type="video/mp4">
+        Browser kamu tidak mendukung video.
+      </video>
+      <div class="banner-overlay"></div>
+      <button class="banner-sound-btn" id="soundBtn" title="Toggle Sound">🔇 SOUND OFF</button>
+      <div class="banner-corner">● REC</div>
+      <div class="banner-text">
+        <span><span class="live-dot"></span>LIVE FEED</span>
+        <span id="bannerTime">00:00:00</span>
+      </div>
+    </div>
+
     <!-- HEADER -->
     <div class="header">
       <div class="header-left">
         <div class="skull-icon">💀</div>
         <div class="title-wrap">
           <div class="title">LOAD <span>TESTER</span></div>
-          <div class="title-sub">v4.2 // MOBILE EDITION</div>
+          <div class="title-sub">v6.0 // GREEN MATRIX EDITION</div>
         </div>
       </div>
       <div class="status-badge">
@@ -1034,7 +1615,7 @@
     <!-- FOOTER -->
     <div class="footer">
       <strong>⚠️ PERINGATAN:</strong> Hanya antarmuka visual. Tidak ada serangan nyata.
-      <span class="marquee">▬▬ LOAD TESTER v4.2 // MOBILE EDITION // EDUCATIONAL ONLY // NO REAL TRAFFIC ▬▬</span>
+      <span class="marquee">▬▬ LOAD TESTER v6.0 // GREEN MATRIX EDITION // EDUCATIONAL ONLY // NO REAL TRAFFIC ▬▬</span>
     </div>
   </div>
 
@@ -1042,9 +1623,87 @@
     (function() {
       'use strict';
 
-      // ==========================================
-      // ===== STATE =====
-      // ==========================================
+      // ============================================================
+      // MODULE 01: MATRIX RAIN BACKGROUND
+      // ============================================================
+      function initMatrix() {
+        const canvas = document.getElementById('matrixCanvas');
+        const mtx = canvas.getContext('2d');
+
+        function resizeMatrix() {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        }
+        resizeMatrix();
+        window.addEventListener('resize', resizeMatrix);
+
+        const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEF';
+        const fontSize = 14;
+        let columns = Math.floor(canvas.width / fontSize);
+        let drops = [];
+        for (let i = 0; i < columns; i++) {
+          drops[i] = Math.random() * canvas.height / fontSize;
+        }
+
+        function drawMatrix() {
+          mtx.fillStyle = 'rgba(0, 26, 0, 0.08)';
+          mtx.fillRect(0, 0, canvas.width, canvas.height);
+          mtx.font = fontSize + 'px monospace';
+
+          for (let i = 0; i < drops.length; i++) {
+            const text = chars.charAt(Math.floor(Math.random() * chars.length));
+            const x = i * fontSize;
+            const y = drops[i] * fontSize;
+
+            const brightness = Math.random();
+            if (brightness > 0.95) {
+              mtx.fillStyle = '#ccffcc';
+              mtx.shadowBlur = 8;
+              mtx.shadowColor = '#00ff44';
+            } else if (brightness > 0.8) {
+              mtx.fillStyle = '#00ff88';
+              mtx.shadowBlur = 4;
+              mtx.shadowColor = '#00ff44';
+            } else {
+              mtx.fillStyle = '#00aa33';
+              mtx.shadowBlur = 0;
+            }
+
+            mtx.fillText(text, x, y);
+
+            if (y > canvas.height && Math.random() > 0.975) {
+              drops[i] = 0;
+            }
+            drops[i] += 0.5 + Math.random() * 0.5;
+          }
+          mtx.shadowBlur = 0;
+        }
+
+        setInterval(drawMatrix, 50);
+      }
+
+      // ============================================================
+      // MODULE 02: FLOATING PARTICLES
+      // ============================================================
+      function initParticles() {
+        const container = document.getElementById('particles');
+        const count = 30;
+        for (let i = 0; i < count; i++) {
+          const p = document.createElement('div');
+          p.className = 'particle';
+          p.style.left = Math.random() * 100 + '%';
+          p.style.animationDuration = (8 + Math.random() * 12) + 's';
+          p.style.animationDelay = (Math.random() * 10) + 's';
+          const size = 1 + Math.random() * 2;
+          p.style.width = size + 'px';
+          p.style.height = size + 'px';
+          container.appendChild(p);
+        }
+      }
+
+      // ============================================================
+      // MODULE 03: STATE VARIABLES
+      // ============================================================
       let isRunning = false;
       let intervalId = null;
       let target = 'example.com';
@@ -1071,14 +1730,28 @@
       let uptimeSeconds = 0;
       let uptimeInterval = null;
       let pingInterval = null;
+      let bannerTimeInterval = null;
+      let bannerTimeCounter = 0;
+
+      let soundEnabled = false;
+      let audioContext = null;
+      let soundLoopInterval = null;
+
+      // Session history
+      let sessionHistory = [];
+      const MAX_HISTORY = 20;
+
+      // Konami sequence
+      const konamiCode = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+      let konamiIndex = 0;
 
       // Chart data
       const chartData = [];
       const CHART_MAX = 60;
 
-      // ==========================================
-      // ===== DOM =====
-      // ==========================================
+      // ============================================================
+      // MODULE 04: DOM REFS
+      // ============================================================
       const targetInput = document.getElementById('targetInput');
       const setTargetBtn = document.getElementById('setTargetBtn');
       const ppsDisplay = document.getElementById('ppsDisplay');
@@ -1116,10 +1789,14 @@
       const bootLog = document.getElementById('bootLog');
       const bootProgress = document.getElementById('bootProgress');
       const toast = document.getElementById('toast');
+      const bannerVideo = document.getElementById('bannerVideo');
+      const soundBtn = document.getElementById('soundBtn');
+      const bannerTime = document.getElementById('bannerTime');
+      const konamiOverlay = document.getElementById('konamiOverlay');
 
-      // ==========================================
-      // ===== UTILITIES =====
-      // ==========================================
+      // ============================================================
+      // MODULE 05: UTILITIES
+      // ============================================================
       function fmt(num) {
         return num.toLocaleString('id-ID');
       }
@@ -1134,9 +1811,17 @@
         setTimeout(() => toast.classList.remove('show'), 2200);
       }
 
-      // ==========================================
-      // ===== LOG =====
-      // ==========================================
+      function randBetween(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+
+      function clamp(num, min, max) {
+        return Math.max(min, Math.min(max, num));
+      }
+
+      // ============================================================
+      // MODULE 06: LOG SYSTEM
+      // ============================================================
       function addLog(message, type = 'info') {
         const entry = document.createElement('div');
         let cls = 'log-entry';
@@ -1156,9 +1841,90 @@
         }
       }
 
-      // ==========================================
-      // ===== CHART =====
-      // ==========================================
+      // ============================================================
+      // MODULE 07: AUDIO SYSTEM
+      // ============================================================
+      function initAudioContext() {
+        if (!audioContext) {
+          try {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          } catch (e) {
+            console.warn('AudioContext not supported', e);
+          }
+        }
+        if (audioContext && audioContext.state === 'suspended') {
+          audioContext.resume();
+        }
+      }
+
+      function playBannerBeep() {
+        if (!soundEnabled || !audioContext) return;
+        try {
+          const osc = audioContext.createOscillator();
+          const gain = audioContext.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = 220 + Math.random() * 60;
+          gain.gain.value = 0.03;
+          osc.connect(gain);
+          gain.connect(audioContext.destination);
+          const now = audioContext.currentTime;
+          osc.start(now);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.3);
+          osc.stop(now + 0.35);
+        } catch (e) {
+          console.warn('Beep error', e);
+        }
+      }
+
+      function startSoundLoop() {
+        if (soundLoopInterval) clearInterval(soundLoopInterval);
+        soundLoopInterval = setInterval(() => {
+          if (soundEnabled) {
+            playBannerBeep();
+            if (Math.random() < 0.5) {
+              setTimeout(playBannerBeep, 120);
+            }
+          }
+        }, 800);
+      }
+
+      function stopSoundLoop() {
+        if (soundLoopInterval) {
+          clearInterval(soundLoopInterval);
+          soundLoopInterval = null;
+        }
+      }
+
+      function toggleSound() {
+        soundEnabled = !soundEnabled;
+        if (soundEnabled) {
+          initAudioContext();
+          bannerVideo.muted = false;
+          bannerVideo.volume = 1.0;
+          const playPromise = bannerVideo.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(() => {
+              bannerVideo.muted = true;
+            });
+          }
+          soundBtn.textContent = '🔊 SOUND ON';
+          soundBtn.classList.add('on');
+          startSoundLoop();
+          showToast('🔊 Sound aktif');
+          addLog('[BANNER] Sound diaktifkan.', 'ok');
+        } else {
+          bannerVideo.muted = true;
+          soundBtn.textContent = '🔇 SOUND OFF';
+          soundBtn.classList.remove('on');
+          stopSoundLoop();
+          showToast('🔇 Sound nonaktif');
+          addLog('[BANNER] Sound dimatikan.', 'info');
+        }
+      }
+
+      // ============================================================
+      // MODULE 08: CHART RENDERER
+      // ============================================================
       function resizeCanvas() {
         const rect = chartCanvas.getBoundingClientRect();
         const dpr = window.devicePixelRatio || 1;
@@ -1176,7 +1942,7 @@
         ctx.clearRect(0, 0, w, h);
 
         // Grid
-        ctx.strokeStyle = 'rgba(255, 0, 0, 0.15)';
+        ctx.strokeStyle = 'rgba(0, 255, 68, 0.15)';
         ctx.lineWidth = 1;
         for (let i = 1; i < 4; i++) {
           const y = (h / 4) * i;
@@ -1209,8 +1975,8 @@
         ctx.lineTo((chartData.length - 1) * stepX, h);
         ctx.closePath();
         const gradient = ctx.createLinearGradient(0, 0, 0, h);
-        gradient.addColorStop(0, 'rgba(255, 0, 0, 0.6)');
-        gradient.addColorStop(1, 'rgba(255, 0, 0, 0.05)');
+        gradient.addColorStop(0, 'rgba(0, 255, 68, 0.6)');
+        gradient.addColorStop(1, 'rgba(0, 255, 68, 0.05)');
         ctx.fillStyle = gradient;
         ctx.fill();
 
@@ -1222,10 +1988,10 @@
           if (i === 0) ctx.moveTo(x, y);
           else ctx.lineTo(x, y);
         });
-        ctx.strokeStyle = '#ff1a1a';
+        ctx.strokeStyle = '#00ff44';
         ctx.lineWidth = 2;
         ctx.shadowBlur = 8;
-        ctx.shadowColor = '#ff0000';
+        ctx.shadowColor = '#00ff44';
         ctx.stroke();
         ctx.shadowBlur = 0;
 
@@ -1236,9 +2002,9 @@
           const lastY = h - (lastVal / max) * h * 0.85 - 5;
           ctx.beginPath();
           ctx.arc(lastX, lastY, 3, 0, Math.PI * 2);
-          ctx.fillStyle = '#ff2222';
+          ctx.fillStyle = '#00ff44';
           ctx.shadowBlur = 10;
-          ctx.shadowColor = '#ff0000';
+          ctx.shadowColor = '#00ff44';
           ctx.fill();
           ctx.shadowBlur = 0;
         }
@@ -1250,9 +2016,9 @@
         drawChart();
       }
 
-      // ==========================================
-      // ===== UPDATE STATS =====
-      // ==========================================
+      // ============================================================
+      // MODULE 09: STATS UPDATE
+      // ============================================================
       function updateStats() {
         ppsDisplay.textContent = fmt(currentPps);
         totalPacketsDisplay.textContent = fmt(packetCounter);
@@ -1276,9 +2042,9 @@
         networkDisplay.textContent = network + '%';
       }
 
-      // ==========================================
-      // ===== UPTIME =====
-      // ==========================================
+      // ============================================================
+      // MODULE 10: TIMERS
+      // ============================================================
       function startUptime() {
         if (uptimeInterval) clearInterval(uptimeInterval);
         uptimeInterval = setInterval(() => {
@@ -1290,9 +2056,17 @@
         }, 1000);
       }
 
-      // ==========================================
-      // ===== PING =====
-      // ==========================================
+      function startBannerTime() {
+        if (bannerTimeInterval) clearInterval(bannerTimeInterval);
+        bannerTimeInterval = setInterval(() => {
+          bannerTimeCounter++;
+          const h = String(Math.floor(bannerTimeCounter / 3600)).padStart(2, '0');
+          const m = String(Math.floor((bannerTimeCounter % 3600) / 60)).padStart(2, '0');
+          const s = String(bannerTimeCounter % 60).padStart(2, '0');
+          bannerTime.textContent = `${h}:${m}:${s}`;
+        }, 1000);
+      }
+
       function startPing() {
         if (pingInterval) clearInterval(pingInterval);
         pingInterval = setInterval(() => {
@@ -1304,17 +2078,17 @@
         }, 1500);
       }
 
-      // ==========================================
-      // ===== STATUS =====
-      // ==========================================
+      // ============================================================
+      // MODULE 11: STATUS
+      // ============================================================
       function setStatus(text, online) {
         statusText.textContent = text;
         statusDot.classList.toggle('offline', !online);
       }
 
-      // ==========================================
-      // ===== RESET =====
-      // ==========================================
+      // ============================================================
+      // MODULE 12: RESET STATE
+      // ============================================================
       function resetState() {
         if (intervalId) { clearInterval(intervalId); intervalId = null; }
         isRunning = false;
@@ -1348,9 +2122,9 @@
         addLog('[INFO] Pilih method lalu tekan START.', 'info');
       }
 
-      // ==========================================
-      // ===== SIMULATION TICK =====
-      // ==========================================
+      // ============================================================
+      // MODULE 13: SIMULATION TICK
+      // ============================================================
       function simulationTick() {
         if (!isRunning) return;
 
@@ -1399,7 +2173,6 @@
         updateStats();
         pushChartData(currentPps);
 
-        // Logs
         if (Math.random() < 0.15) {
           const messages = [
             { msg: `Mengirim paket ke ${target} ... ${currentPps} pps`, type: 'info' },
@@ -1429,9 +2202,9 @@
         }
       }
 
-      // ==========================================
-      // ===== START =====
-      // ==========================================
+      // ============================================================
+      // MODULE 14: START / STOP
+      // ============================================================
       function startAttack() {
         if (isRunning) return;
         if (!target || target.trim() === '') {
@@ -1445,6 +2218,9 @@
         setStatus('TESTING', true);
         showToast('🚀 Test started');
 
+        sessionHistory.push({ action: 'START', target, method, time: Date.now() });
+        if (sessionHistory.length > MAX_HISTORY) sessionHistory.shift();
+
         addLog(`🚀 Memulai load test ke ${target} ...`, 'warn');
         addLog(`🔧 Method: ${method} | Threads: auto`, 'info');
         addLog(`📡 Node: 127.0.0.1 | Resolving endpoint...`, 'info');
@@ -1455,9 +2231,6 @@
         intervalId = setInterval(simulationTick, 100);
       }
 
-      // ==========================================
-      // ===== STOP =====
-      // ==========================================
       function stopAttack() {
         if (!isRunning) return;
         isRunning = false;
@@ -1467,11 +2240,14 @@
         setStatus('IDLE', true);
         addLog(`⏸️ Test dihentikan. Total paket: ${fmt(packetCounter)}`, 'warn');
         showToast('⏹ Test stopped');
+
+        sessionHistory.push({ action: 'STOP', packets: packetCounter, time: Date.now() });
+        if (sessionHistory.length > MAX_HISTORY) sessionHistory.shift();
       }
 
-      // ==========================================
-      // ===== SET TARGET =====
-      // ==========================================
+      // ============================================================
+      // MODULE 15: SET TARGET
+      // ============================================================
       function setTarget() {
         const newTarget = targetInput.value.trim();
         if (newTarget === '') {
@@ -1487,12 +2263,12 @@
         targetInput.blur();
       }
 
-      // ==========================================
-      // ===== EXPORT LOG =====
-      // ==========================================
+      // ============================================================
+      // MODULE 16: EXPORT LOG
+      // ============================================================
       function exportLog() {
         const entries = Array.from(logBox.children).map(el => el.textContent);
-        const header = `=== LOAD TESTER v4.2 LOG ===\nEndpoint: ${target}\nMethod: ${method}\nTotal Paket: ${packetCounter}\nDate: ${new Date().toLocaleString('id-ID')}\n\n`;
+        const header = `=== LOAD TESTER v6.0 LOG ===\nEndpoint: ${target}\nMethod: ${method}\nTotal Paket: ${packetCounter}\nDate: ${new Date().toLocaleString('id-ID')}\n\n`;
         const blob = new Blob([header + entries.join('\n')], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -1506,9 +2282,9 @@
         showToast('💾 Log exported');
       }
 
-      // ==========================================
-      // ===== BOOT SCREEN =====
-      // ==========================================
+      // ============================================================
+      // MODULE 17: BOOT SEQUENCE
+      // ============================================================
       function runBootSequence() {
         const bootLines = [
           '[ OK ] Initializing kernel...',
@@ -1517,7 +2293,9 @@
           '[ OK ] Starting services...',
           '[ OK ] Connecting to node 127.0.0.1...',
           '[ OK ] Loading test methods...',
+          '[ OK ] Loading banner stream...',
           '[ OK ] Establishing secure channel...',
+          '[ OK ] Initializing green matrix...',
           '[ OK ] System ready.',
         ];
         let i = 0;
@@ -1529,7 +2307,7 @@
             bootLog.appendChild(line);
             i++;
             bootProgress.style.width = (i / bootLines.length * 100) + '%';
-            setTimeout(step, 180);
+            setTimeout(step, 160);
           } else {
             setTimeout(() => {
               bootScreen.classList.add('hide');
@@ -1541,10 +2319,94 @@
         step();
       }
 
-      // ==========================================
-      // ===== INIT =====
-      // ==========================================
+      // ============================================================
+      // MODULE 18: BANNER
+      // ============================================================
+      function setupBanner() {
+        bannerVideo.addEventListener('error', () => {
+          addLog('[BANNER] Gagal memuat video banner.', 'error');
+        });
+
+        bannerVideo.addEventListener('play', () => {
+          addLog('[BANNER] Stream aktif.', 'ok');
+        });
+
+        bannerVideo.addEventListener('pause', () => {
+          addLog('[BANNER] Stream pause.', 'warn');
+        });
+
+        const playPromise = bannerVideo.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            addLog('[BANNER] Autoplay diblokir. Tap video untuk play.', 'warn');
+            bannerVideo.addEventListener('click', () => {
+              bannerVideo.play();
+            }, { once: true });
+          });
+        }
+
+        soundBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleSound();
+        });
+      }
+
+      // ============================================================
+      // MODULE 19: KONAMI CODE
+      // ============================================================
+      function setupKonami() {
+        document.addEventListener('keydown', (e) => {
+          if (e.key === konamiCode[konamiIndex] || e.key.toLowerCase() === konamiCode[konamiIndex]) {
+            konamiIndex++;
+            if (konamiIndex === konamiCode.length) {
+              activateKonami();
+              konamiIndex = 0;
+            }
+          } else {
+            konamiIndex = 0;
+          }
+        });
+
+        konamiOverlay.addEventListener('click', () => {
+          konamiOverlay.classList.remove('show');
+        });
+      }
+
+      function activateKonami() {
+        konamiOverlay.classList.add('show');
+        addLog('🎮 KONAMI CODE ACTIVATED!', 'ok');
+        showToast('🎮 CHEAT ACTIVATED');
+        // Bonus effect: spam particles
+        for (let i = 0; i < 50; i++) {
+          setTimeout(() => {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.style.left = Math.random() * 100 + '%';
+            p.style.animationDuration = (2 + Math.random() * 3) + 's';
+            p.style.width = '4px';
+            p.style.height = '4px';
+            document.getElementById('particles').appendChild(p);
+            setTimeout(() => p.remove(), 5000);
+          }, i * 30);
+        }
+      }
+
+      // ============================================================
+      // MODULE 20: PREVENT ZOOM
+      // ============================================================
+      function preventZoom() {
+        document.addEventListener('gesturestart', (e) => e.preventDefault());
+        document.addEventListener('dblclick', (e) => e.preventDefault(), { passive: false });
+      }
+
+      // ============================================================
+      // MODULE 21: INIT
+      // ============================================================
       function init() {
+        // Background animations
+        initMatrix();
+        initParticles();
+
         targetInput.value = 'example.com';
         target = 'example.com';
         ipDisplay.textContent = randomIP();
@@ -1552,13 +2414,16 @@
         updateStats();
         startUptime();
         startPing();
+        startBannerTime();
 
-        // Canvas resize
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
         window.addEventListener('orientationchange', () => setTimeout(resizeCanvas, 300));
 
-        // Event listeners
+        setupBanner();
+        setupKonami();
+        preventZoom();
+
         startBtn.addEventListener('click', startAttack);
         stopBtn.addEventListener('click', stopAttack);
         resetBtn.addEventListener('click', () => {
@@ -1583,19 +2448,14 @@
           });
         });
 
-        // Prevent pinch zoom on mobile
-        document.addEventListener('gesturestart', (e) => e.preventDefault());
-        document.addEventListener('dblclick', (e) => e.preventDefault(), { passive: false });
-
-        // Initial logs
         addLog('Panel dimuat. Sistem siap.', 'ok');
         addLog('Menunggu konfigurasi endpoint...', 'info');
+        addLog('Banner stream dari CDN eksternal.', 'info');
+        addLog('Green Matrix edition aktif. Selamat datang.', 'ok');
 
-        // Boot animation
         runBootSequence();
       }
 
-      // Wait for DOM
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
       } else {
