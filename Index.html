@@ -1,0 +1,1606 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0a0000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>DDoS Attack Panel v4.2</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Courier New', 'Consolas', monospace;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      background: #0a0000;
+      overflow-x: hidden;
+    }
+
+    body {
+      background-image:
+        repeating-linear-gradient(0deg, rgba(255,0,0,0.03) 0px, rgba(255,0,0,0.03) 1px, transparent 1px, transparent 3px),
+        radial-gradient(circle at 50% 20%, #1a0000, #050000);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 8px 6px 30px;
+      color: #ffcccc;
+      font-size: 14px;
+      touch-action: manipulation;
+    }
+
+    /* === PANEL UTAMA === */
+    .panel {
+      width: 100%;
+      max-width: 480px;
+      background: #1a0505;
+      border: 2px solid #ff1a1a;
+      border-radius: 0;
+      padding: 12px;
+      box-shadow:
+        0 0 0 2px #000,
+        0 0 20px #ff0000,
+        inset 0 0 25px rgba(255, 0, 0, 0.15);
+      position: relative;
+      animation: panelPulse 3s infinite alternate;
+    }
+
+    @keyframes panelPulse {
+      0% { box-shadow: 0 0 0 2px #000, 0 0 15px #ff0000, inset 0 0 20px rgba(255, 0, 0, 0.1); }
+      100% { box-shadow: 0 0 0 2px #000, 0 0 30px #ff0000, inset 0 0 35px rgba(255, 0, 0, 0.2); }
+    }
+
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(255, 0, 0, 0.05) 0px,
+        rgba(255, 0, 0, 0.05) 1px,
+        transparent 1px,
+        transparent 4px
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* === HEADER === */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+      padding: 8px 10px;
+      background: #400000;
+      border: 2px solid #ff1a1a;
+      box-shadow: 0 0 12px rgba(255, 0, 0, 0.6), inset 0 0 12px rgba(0,0,0,0.6);
+      position: relative;
+      z-index: 1;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .skull-icon {
+      font-size: 1.5rem;
+      filter: drop-shadow(0 0 6px #ff0000);
+      animation: skullBlink 2s infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes skullBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    .title-wrap {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .title {
+      font-size: 1rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #ff2222;
+      text-shadow:
+        0 0 4px #ff0000,
+        0 0 10px #ff0000,
+        0 0 18px #990000;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .title span {
+      color: #ffffff;
+      text-shadow: 0 0 6px #ff0000, 0 0 14px #ff0000;
+    }
+
+    .title-sub {
+      font-size: 0.55rem;
+      color: #ff8888;
+      letter-spacing: 2px;
+      font-weight: 700;
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 8px;
+      background: #0d0000;
+      border: 2px solid #ff1a1a;
+      font-size: 0.6rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+      color: #ff4444;
+      text-shadow: 0 0 6px #ff0000;
+      box-shadow: 0 0 10px rgba(255,0,0,0.5), inset 0 0 8px rgba(0,0,0,0.8);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: #00ff66;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #00ff66, 0 0 15px #00ff66;
+      animation: dotBlink 1s infinite;
+      flex-shrink: 0;
+    }
+
+    .status-dot.offline {
+      background: #ff0000;
+      box-shadow: 0 0 8px #ff0000, 0 0 15px #ff0000;
+    }
+
+    @keyframes dotBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* === INFO BAR === */
+    .info-bar {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 5px;
+      margin-bottom: 10px;
+      padding: 8px;
+      background: #0d0000;
+      border: 2px solid #ff1a1a;
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.4), inset 0 0 10px rgba(0,0,0,0.8);
+      position: relative;
+      z-index: 1;
+      font-size: 0.6rem;
+      color: #ff7777;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 5px;
+      border: 1px solid #400000;
+      background: #1a0000;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .info-item .val {
+      color: #ff2222;
+      text-shadow: 0 0 6px #ff0000;
+      font-weight: 900;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* === TARGET INPUT === */
+    .target-box {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 10px;
+      background: #2a0000;
+      padding: 8px;
+      border: 2px solid #ff1a1a;
+      box-shadow: 0 0 12px rgba(255, 0, 0, 0.5), inset 0 0 12px rgba(0,0,0,0.8);
+      position: relative;
+      z-index: 1;
+    }
+
+    .target-label {
+      font-size: 0.6rem;
+      color: #ff8888;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      text-shadow: 0 0 4px #ff0000;
+    }
+
+    .target-row {
+      display: flex;
+      gap: 6px;
+    }
+
+    .target-box input {
+      flex: 1;
+      min-width: 0;
+      background: #0d0000;
+      border: 2px solid #ff1a1a;
+      outline: none;
+      color: #ff5555;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 10px 10px;
+      letter-spacing: 1px;
+      font-family: 'Courier New', monospace;
+      text-shadow: 0 0 6px #ff0000;
+      box-shadow: inset 0 0 12px rgba(255, 0, 0, 0.2);
+    }
+
+    .target-box input::placeholder {
+      color: #882222;
+      font-style: italic;
+      text-shadow: none;
+    }
+
+    .target-box input:focus {
+      background: #1a0000;
+      box-shadow: 0 0 15px #ff0000, inset 0 0 12px rgba(255,0,0,0.3);
+    }
+
+    .target-box button {
+      background: #cc0000;
+      border: 2px solid #ff4444;
+      padding: 10px 14px;
+      font-weight: 900;
+      font-size: 0.75rem;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-shadow: 0 0 6px #ff0000, 0 1px 0 #000;
+      box-shadow: 0 0 12px #ff0000, inset 0 0 10px rgba(0,0,0,0.4);
+      font-family: 'Courier New', monospace;
+      white-space: nowrap;
+    }
+
+    .target-box button:hover {
+      background: #ff1a1a;
+      box-shadow: 0 0 25px #ff0000, 0 0 40px #ff0000;
+    }
+
+    .target-box button:active {
+      transform: scale(0.96);
+      background: #990000;
+    }
+
+    /* === METHOD SELECTOR === */
+    .method-box {
+      margin-bottom: 10px;
+      background: #2a0000;
+      border: 2px solid #ff1a1a;
+      padding: 8px;
+      box-shadow: 0 0 12px rgba(255, 0, 0, 0.45), inset 0 0 12px rgba(0,0,0,0.6);
+      position: relative;
+      z-index: 1;
+    }
+
+    .method-label {
+      color: #ff8888;
+      font-size: 0.6rem;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      margin-bottom: 6px;
+      text-shadow: 0 0 4px #ff0000;
+    }
+
+    .method-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+    }
+
+    .method-btn {
+      padding: 8px 4px;
+      background: #0d0000;
+      border: 2px solid #ff1a1a;
+      color: #ff5555;
+      font-family: 'Courier New', monospace;
+      font-weight: 900;
+      font-size: 0.6rem;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-shadow: 0 0 4px #ff0000;
+      text-align: center;
+    }
+
+    .method-btn:active {
+      transform: scale(0.95);
+    }
+
+    .method-btn.active {
+      background: #cc0000;
+      border-color: #ffffff;
+      color: #ffffff;
+      text-shadow: 0 0 8px #ffffff;
+      box-shadow: 0 0 15px #ff0000, inset 0 0 10px rgba(0,0,0,0.6);
+    }
+
+    /* === STATS GRID === */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .stat-card {
+      background: #2a0000;
+      border: 2px solid #ff1a1a;
+      padding: 8px 6px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.45), inset 0 0 10px rgba(0,0,0,0.6);
+      transition: all 0.15s;
+    }
+
+    .stat-card:active {
+      background: #400000;
+      box-shadow: 0 0 20px #ff0000, inset 0 0 15px rgba(255,0,0,0.25);
+    }
+
+    .stat-label {
+      font-size: 0.55rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #ff8888;
+      margin-bottom: 4px;
+      font-weight: 700;
+      text-shadow: 0 0 4px #ff0000;
+    }
+
+    .stat-value {
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: #ff2222;
+      text-shadow:
+        0 0 6px #ff0000,
+        0 0 12px #ff0000,
+        0 0 20px #990000;
+      font-family: 'Courier New', monospace;
+      line-height: 1.1;
+      transition: all 0.1s;
+      word-break: break-all;
+    }
+
+    .stat-value.small {
+      font-size: 0.95rem;
+      color: #ff5555;
+      text-shadow: 0 0 6px #ff0000, 0 0 12px #cc0000;
+    }
+
+    .stat-value.mini {
+      font-size: 0.8rem;
+      color: #ff7777;
+      text-shadow: 0 0 5px #ff0000;
+    }
+
+    /* === PROGRESS BAR === */
+    .progress-section {
+      margin-bottom: 10px;
+      background: #2a0000;
+      border: 2px solid #ff1a1a;
+      padding: 8px 10px;
+      box-shadow: 0 0 12px rgba(255, 0, 0, 0.45), inset 0 0 12px rgba(0,0,0,0.6);
+      position: relative;
+      z-index: 1;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      color: #ff7777;
+      font-size: 0.6rem;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+      font-weight: 700;
+      text-shadow: 0 0 4px #ff0000;
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 18px;
+      background: #0d0000;
+      border: 2px solid #ff1a1a;
+      overflow: hidden;
+      box-shadow: inset 0 0 12px #000;
+      position: relative;
+    }
+
+    .progress-bar-bg::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        90deg,
+        transparent 0px,
+        transparent 8px,
+        rgba(0,0,0,0.5) 8px,
+        rgba(0,0,0,0.5) 10px
+      );
+      pointer-events: none;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #ff0000, #ff4444, #ff8888);
+      transition: width 0.2s ease;
+      box-shadow: 0 0 18px #ff0000, inset 0 0 8px #ffffff40;
+    }
+
+    /* === LOG BOX === */
+    .log-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+      padding: 5px 8px;
+      background: #400000;
+      border: 2px solid #ff1a1a;
+      color: #ff8888;
+      font-size: 0.6rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-shadow: 0 0 4px #ff0000;
+      position: relative;
+      z-index: 1;
+    }
+
+    .log-header .count {
+      color: #ff2222;
+      text-shadow: 0 0 6px #ff0000;
+    }
+
+    .log-box {
+      background: #0d0000;
+      border: 2px solid #ff1a1a;
+      padding: 8px 10px;
+      height: 160px;
+      overflow-y: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 0.68rem;
+      color: #ff7777;
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.5), inset 0 0 20px #000;
+      margin-bottom: 10px;
+      scrollbar-width: thin;
+      scrollbar-color: #ff1a1a #1a0000;
+      position: relative;
+      z-index: 1;
+      text-shadow: 0 0 4px #ff000080;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .log-box::-webkit-scrollbar { width: 5px; }
+    .log-box::-webkit-scrollbar-track { background: #1a0000; }
+    .log-box::-webkit-scrollbar-thumb { background: #ff1a1a; }
+
+    .log-entry {
+      margin-bottom: 4px;
+      border-left: 2px solid #ff1a1a;
+      padding-left: 6px;
+      word-break: break-all;
+      animation: fadeIn 0.25s;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+
+    .log-entry.warn {
+      border-left-color: #ffaa00;
+      color: #ffcc66;
+      text-shadow: 0 0 4px #ffaa0080;
+    }
+
+    .log-entry.error {
+      border-left-color: #ff0000;
+      color: #ff2222;
+      text-shadow: 0 0 6px #ff0000;
+      font-weight: 800;
+    }
+
+    .log-entry.ok {
+      border-left-color: #00ff66;
+      color: #66ff99;
+      text-shadow: 0 0 4px #00ff6680;
+    }
+
+    .log-entry.info {
+      border-left-color: #66ccff;
+      color: #99ddff;
+      text-shadow: 0 0 4px #66ccff80;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateX(-6px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* === CONTROL BUTTONS === */
+    .action-buttons {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+      position: relative;
+      z-index: 1;
+      margin-bottom: 10px;
+    }
+
+    .btn {
+      padding: 12px 6px;
+      border: 2px solid;
+      font-weight: 900;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      font-family: 'Courier New', monospace;
+      background: #2a0000;
+      text-shadow: 0 0 6px currentColor;
+    }
+
+    .btn:active:not(:disabled) {
+      transform: scale(0.96);
+    }
+
+    .btn-start {
+      border-color: #ff1a1a;
+      color: #ff3333;
+      box-shadow: 0 0 12px rgba(255, 0, 0, 0.6), inset 0 0 12px rgba(255,0,0,0.15);
+    }
+
+    .btn-start:hover:not(:disabled) {
+      background: #cc0000;
+      color: #ffffff;
+      text-shadow: 0 0 10px #ffffff;
+      box-shadow: 0 0 25px #ff0000, 0 0 45px #ff0000;
+    }
+
+    .btn-stop {
+      border-color: #ffaa00;
+      color: #ffaa00;
+      box-shadow: 0 0 12px rgba(255, 170, 0, 0.5), inset 0 0 12px rgba(255,170,0,0.15);
+    }
+
+    .btn-stop:hover:not(:disabled) {
+      background: #cc8800;
+      color: #ffffff;
+      text-shadow: 0 0 10px #ffffff;
+    }
+
+    .btn-reset {
+      border-color: #ff5555;
+      color: #ff5555;
+      box-shadow: 0 0 12px rgba(255, 85, 85, 0.5), inset 0 0 12px rgba(255,85,85,0.15);
+    }
+
+    .btn-reset:hover:not(:disabled) {
+      background: #aa0000;
+      color: #ffffff;
+      text-shadow: 0 0 10px #ffffff;
+    }
+
+    .btn-export {
+      border-color: #66ccff;
+      color: #66ccff;
+      box-shadow: 0 0 12px rgba(102, 204, 255, 0.4), inset 0 0 12px rgba(102,204,255,0.15);
+    }
+
+    .btn-export:hover:not(:disabled) {
+      background: #3399cc;
+      color: #ffffff;
+      text-shadow: 0 0 10px #ffffff;
+    }
+
+    .btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* === BOTTOM GRID === */
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 6px;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .mini-panel {
+      background: #2a0000;
+      border: 2px solid #ff1a1a;
+      padding: 8px 10px;
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.4), inset 0 0 10px rgba(0,0,0,0.6);
+    }
+
+    .mini-panel-title {
+      color: #ff8888;
+      font-size: 0.6rem;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      margin-bottom: 6px;
+      text-shadow: 0 0 4px #ff0000;
+      border-bottom: 1px solid #ff1a1a;
+      padding-bottom: 4px;
+    }
+
+    .mini-panel-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.65rem;
+      color: #ff7777;
+      padding: 3px 0;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+      border-bottom: 1px dashed #400000;
+    }
+
+    .mini-panel-row:last-child {
+      border-bottom: none;
+    }
+
+    .mini-panel-row .val {
+      color: #ff2222;
+      font-weight: 900;
+      text-shadow: 0 0 5px #ff0000;
+    }
+
+    /* === LIVE CHART === */
+    .chart-box {
+      background: #0d0000;
+      border: 2px solid #ff1a1a;
+      padding: 6px;
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.4), inset 0 0 10px rgba(0,0,0,0.6);
+      position: relative;
+      z-index: 1;
+      margin-bottom: 10px;
+    }
+
+    .chart-canvas {
+      width: 100%;
+      height: 60px;
+      display: block;
+      background: #050000;
+    }
+
+    /* === FOOTER === */
+    .footer {
+      margin-top: 10px;
+      text-align: center;
+      color: #ff8888;
+      font-size: 0.58rem;
+      letter-spacing: 0.8px;
+      background: #2a0000;
+      border: 2px solid #ff1a1a;
+      padding: 8px 10px;
+      box-shadow: 0 0 12px rgba(255, 0, 0, 0.5), inset 0 0 10px rgba(0,0,0,0.6);
+      position: relative;
+      z-index: 1;
+      font-weight: 700;
+      line-height: 1.5;
+      overflow: hidden;
+    }
+
+    .footer strong {
+      color: #ff2222;
+      font-weight: 900;
+      text-shadow: 0 0 6px #ff0000;
+    }
+
+    .footer .marquee {
+      display: block;
+      overflow: hidden;
+      white-space: nowrap;
+      color: #ff4444;
+      font-size: 0.55rem;
+      margin-top: 5px;
+      letter-spacing: 2px;
+      animation: marquee 20s linear infinite;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* === BOOT SCREEN === */
+    .boot-screen {
+      position: fixed;
+      inset: 0;
+      background: #0a0000;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      font-family: 'Courier New', monospace;
+      color: #ff4444;
+      text-shadow: 0 0 6px #ff0000;
+      transition: opacity 0.5s;
+    }
+
+    .boot-screen.hide {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .boot-logo {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      filter: drop-shadow(0 0 15px #ff0000);
+      animation: skullBlink 1s infinite;
+    }
+
+    .boot-title {
+      font-size: 1.2rem;
+      font-weight: 900;
+      letter-spacing: 3px;
+      margin-bottom: 20px;
+      text-align: center;
+      color: #ff2222;
+      text-shadow: 0 0 8px #ff0000, 0 0 20px #ff0000;
+    }
+
+    .boot-log {
+      width: 100%;
+      max-width: 320px;
+      font-size: 0.7rem;
+      line-height: 1.6;
+      color: #ff7777;
+      text-align: left;
+    }
+
+    .boot-log-line {
+      opacity: 0;
+      animation: bootFade 0.3s forwards;
+    }
+
+    @keyframes bootFade {
+      to { opacity: 1; }
+    }
+
+    .boot-progress {
+      width: 100%;
+      max-width: 320px;
+      height: 8px;
+      background: #1a0000;
+      border: 2px solid #ff1a1a;
+      margin-top: 20px;
+      overflow: hidden;
+    }
+
+    .boot-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #ff0000, #ff8888);
+      box-shadow: 0 0 15px #ff0000;
+      transition: width 0.3s;
+    }
+
+    /* === TOAST NOTIFICATION === */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #2a0000;
+      border: 2px solid #ff1a1a;
+      padding: 10px 16px;
+      font-size: 0.75rem;
+      font-weight: 900;
+      color: #ff5555;
+      letter-spacing: 1px;
+      text-shadow: 0 0 6px #ff0000;
+      box-shadow: 0 0 20px #ff0000, inset 0 0 10px rgba(0,0,0,0.6);
+      z-index: 10000;
+      transition: transform 0.3s;
+      max-width: 90%;
+      text-align: center;
+      font-family: 'Courier New', monospace;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* === RESPONSIVE TWEAKS === */
+    @media (min-width: 400px) {
+      .title { font-size: 1.15rem; }
+      .stat-value { font-size: 1.3rem; }
+    }
+
+    @media (min-width: 500px) {
+      .stats-grid { grid-template-columns: repeat(3, 1fr); }
+      .action-buttons { grid-template-columns: repeat(4, 1fr); }
+      .bottom-grid { grid-template-columns: repeat(2, 1fr); }
+      .method-grid { grid-template-columns: repeat(6, 1fr); }
+    }
+
+    @media (min-width: 700px) {
+      body { padding: 20px 16px 40px; }
+      .panel { max-width: 700px; padding: 20px; }
+      .title { font-size: 1.5rem; letter-spacing: 4px; }
+      .title-sub { font-size: 0.7rem; }
+      .info-bar { grid-template-columns: repeat(4, 1fr); }
+      .target-box { flex-direction: row; align-items: center; }
+      .target-label { display: none; }
+      .target-row { flex: 1; }
+      .stats-grid { grid-template-columns: repeat(6, 1fr); }
+      .stat-value { font-size: 1.5rem; }
+      .stat-value.small { font-size: 1.15rem; }
+      .stat-value.mini { font-size: 0.95rem; }
+      .log-box { height: 220px; font-size: 0.78rem; }
+      .bottom-grid { grid-template-columns: repeat(3, 1fr); }
+      .btn { font-size: 0.9rem; }
+    }
+
+    /* === SAFE AREA iOS === */
+    @supports (padding: max(0px)) {
+      body {
+        padding-left: max(6px, env(safe-area-inset-left));
+        padding-right: max(6px, env(safe-area-inset-right));
+        padding-bottom: max(30px, env(safe-area-inset-bottom));
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BOOT SCREEN -->
+  <div class="boot-screen" id="bootScreen">
+    <div class="boot-logo">💀</div>
+    <div class="boot-title">DDoS PANEL v4.2</div>
+    <div class="boot-log" id="bootLog"></div>
+    <div class="boot-progress">
+      <div class="boot-progress-fill" id="bootProgress"></div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <div class="panel">
+    <!-- HEADER -->
+    <div class="header">
+      <div class="header-left">
+        <div class="skull-icon">💀</div>
+        <div class="title-wrap">
+          <div class="title">DDoS <span>PANEL</span></div>
+          <div class="title-sub">v4.2 // MOBILE EDITION</div>
+        </div>
+      </div>
+      <div class="status-badge">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText">IDLE</span>
+      </div>
+    </div>
+
+    <!-- INFO BAR -->
+    <div class="info-bar">
+      <div class="info-item">🖥️ <span class="val">127.0.0.1</span></div>
+      <div class="info-item">🌐 <span class="val" id="ipDisplay">0.0.0.0</span></div>
+      <div class="info-item">⏱️ <span class="val" id="uptimeDisplay">00:00:00</span></div>
+      <div class="info-item">📡 <span class="val" id="pingDisplay">0ms</span></div>
+    </div>
+
+    <!-- TARGET -->
+    <div class="target-box">
+      <div class="target-label">🎯 TARGET</div>
+      <div class="target-row">
+        <input type="text" id="targetInput" placeholder="target.com / IP" value="example.com" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        <button id="setTargetBtn">SET</button>
+      </div>
+    </div>
+
+    <!-- METHOD SELECTOR -->
+    <div class="method-box">
+      <div class="method-label">⚙️ ATTACK METHOD</div>
+      <div class="method-grid">
+        <button class="method-btn active" data-method="HTTP">HTTP</button>
+        <button class="method-btn" data-method="UDP">UDP</button>
+        <button class="method-btn" data-method="TCP">TCP</button>
+        <button class="method-btn" data-method="SLOW">SLOW</button>
+        <button class="method-btn" data-method="DNS">DNS</button>
+        <button class="method-btn" data-method="MIX">MIX</button>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Packet/dtk</div>
+        <div class="stat-value" id="ppsDisplay">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Paket</div>
+        <div class="stat-value small" id="totalPacketsDisplay">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Thread</div>
+        <div class="stat-value" id="threadDisplay">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Beban</div>
+        <div class="stat-value small" id="loadDisplay">0%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Bandwidth</div>
+        <div class="stat-value mini" id="bandwidthDisplay">0 Mbps</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Respons</div>
+        <div class="stat-value mini" id="responseDisplay">0 ms</div>
+      </div>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="progress-section">
+      <div class="progress-label">
+        <span>🔥 INTENSITAS</span>
+        <span id="progressPercent">0%</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+    <!-- LIVE CHART -->
+    <div class="chart-box">
+      <canvas class="chart-canvas" id="chartCanvas"></canvas>
+    </div>
+
+    <!-- LOG HEADER -->
+    <div class="log-header">
+      <span>📜 CONSOLE</span>
+      <span>LINES: <span class="count" id="logCount">0</span></span>
+    </div>
+
+    <!-- LOG -->
+    <div class="log-box" id="logBox">
+      <div class="log-entry ok">[SYSTEM] Panel aktif...</div>
+      <div class="log-entry info">[INFO] Masukkan target lalu SET.</div>
+    </div>
+
+    <!-- TOMBOL KONTROL -->
+    <div class="action-buttons">
+      <button class="btn btn-start" id="startBtn">▶ START</button>
+      <button class="btn btn-stop" id="stopBtn" disabled>⏹ STOP</button>
+      <button class="btn btn-reset" id="resetBtn">⟲ RESET</button>
+      <button class="btn btn-export" id="exportBtn">⬇ EXPORT</button>
+    </div>
+
+    <!-- BOTTOM GRID -->
+    <div class="bottom-grid">
+      <div class="mini-panel">
+        <div class="mini-panel-title">📊 CONNECTION</div>
+        <div class="mini-panel-row">ACTIVE <span class="val" id="activeConnDisplay">0</span></div>
+        <div class="mini-panel-row">FAILED <span class="val" id="failedConnDisplay">0</span></div>
+        <div class="mini-panel-row">SUCCESS <span class="val" id="successRateDisplay">0%</span></div>
+      </div>
+      <div class="mini-panel">
+        <div class="mini-panel-title">🛡️ TARGET</div>
+        <div class="mini-panel-row">HTTP CODE <span class="val" id="httpCodeDisplay">---</span></div>
+        <div class="mini-panel-row">LOAD <span class="val" id="serverLoadDisplay">0%</span></div>
+        <div class="mini-panel-row">FIREWALL <span class="val" id="firewallDisplay">UNKNOWN</span></div>
+      </div>
+      <div class="mini-panel">
+        <div class="mini-panel-title">⚡ RESOURCE</div>
+        <div class="mini-panel-row">CPU <span class="val" id="cpuDisplay">0%</span></div>
+        <div class="mini-panel-row">RAM <span class="val" id="ramDisplay">0%</span></div>
+        <div class="mini-panel-row">NETWORK <span class="val" id="networkDisplay">0%</span></div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+      <strong>⚠️ PERINGATAN:</strong> Hanya antarmuka visual. Tidak ada serangan nyata.
+      <span class="marquee">▬▬ DDoS PANEL v4.2 // MOBILE EDITION // EDUCATIONAL ONLY // NO REAL ATTACK ▬▬</span>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      'use strict';
+
+      // ==========================================
+      // ===== STATE =====
+      // ==========================================
+      let isRunning = false;
+      let intervalId = null;
+      let target = 'example.com';
+      let method = 'HTTP';
+
+      let packetCounter = 0;
+      let currentPps = 0;
+      let threadCount = 0;
+      let loadPercent = 0;
+      let progress = 0;
+      let bandwidth = 0;
+      let responseTime = 0;
+      let activeConn = 0;
+      let failedConn = 0;
+      let successRate = 100;
+      let httpCode = '---';
+      let serverLoad = 0;
+      let firewall = 'UNKNOWN';
+      let cpu = 0;
+      let ram = 0;
+      let network = 0;
+      let logCount = 0;
+
+      let uptimeSeconds = 0;
+      let uptimeInterval = null;
+      let pingInterval = null;
+      let chartInterval = null;
+
+      // Chart data
+      const chartData = [];
+      const CHART_MAX = 60;
+
+      // ==========================================
+      // ===== DOM =====
+      // ==========================================
+      const targetInput = document.getElementById('targetInput');
+      const setTargetBtn = document.getElementById('setTargetBtn');
+      const ppsDisplay = document.getElementById('ppsDisplay');
+      const totalPacketsDisplay = document.getElementById('totalPacketsDisplay');
+      const threadDisplay = document.getElementById('threadDisplay');
+      const loadDisplay = document.getElementById('loadDisplay');
+      const bandwidthDisplay = document.getElementById('bandwidthDisplay');
+      const responseDisplay = document.getElementById('responseDisplay');
+      const progressFill = document.getElementById('progressFill');
+      const progressPercent = document.getElementById('progressPercent');
+      const logBox = document.getElementById('logBox');
+      const logCountEl = document.getElementById('logCount');
+      const startBtn = document.getElementById('startBtn');
+      const stopBtn = document.getElementById('stopBtn');
+      const resetBtn = document.getElementById('resetBtn');
+      const exportBtn = document.getElementById('exportBtn');
+      const statusDot = document.getElementById('statusDot');
+      const statusText = document.getElementById('statusText');
+      const ipDisplay = document.getElementById('ipDisplay');
+      const uptimeDisplay = document.getElementById('uptimeDisplay');
+      const pingDisplay = document.getElementById('pingDisplay');
+      const activeConnDisplay = document.getElementById('activeConnDisplay');
+      const failedConnDisplay = document.getElementById('failedConnDisplay');
+      const successRateDisplay = document.getElementById('successRateDisplay');
+      const httpCodeDisplay = document.getElementById('httpCodeDisplay');
+      const serverLoadDisplay = document.getElementById('serverLoadDisplay');
+      const firewallDisplay = document.getElementById('firewallDisplay');
+      const cpuDisplay = document.getElementById('cpuDisplay');
+      const ramDisplay = document.getElementById('ramDisplay');
+      const networkDisplay = document.getElementById('networkDisplay');
+      const methodBtns = document.querySelectorAll('.method-btn');
+      const chartCanvas = document.getElementById('chartCanvas');
+      const ctx = chartCanvas.getContext('2d');
+      const bootScreen = document.getElementById('bootScreen');
+      const bootLog = document.getElementById('bootLog');
+      const bootProgress = document.getElementById('bootProgress');
+      const toast = document.getElementById('toast');
+
+      // ==========================================
+      // ===== UTILITIES =====
+      // ==========================================
+      function fmt(num) {
+        return num.toLocaleString('id-ID');
+      }
+
+      function randomIP() {
+        return `${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
+      }
+
+      function showToast(msg) {
+        toast.textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2200);
+      }
+
+      // ==========================================
+      // ===== LOG =====
+      // ==========================================
+      function addLog(message, type = 'info') {
+        const entry = document.createElement('div');
+        let cls = 'log-entry';
+        if (type === 'warn') cls += ' warn';
+        else if (type === 'error') cls += ' error';
+        else if (type === 'ok') cls += ' ok';
+        else if (type === 'info') cls += ' info';
+        entry.className = cls;
+        const timestamp = new Date().toLocaleTimeString('id-ID', { hour12: false });
+        entry.textContent = `[${timestamp}] ${message}`;
+        logBox.appendChild(entry);
+        logBox.scrollTop = logBox.scrollHeight;
+        logCount++;
+        logCountEl.textContent = logCount;
+        while (logBox.children.length > 80) {
+          logBox.removeChild(logBox.firstChild);
+        }
+      }
+
+      // ==========================================
+      // ===== CHART =====
+      // ==========================================
+      function resizeCanvas() {
+        const rect = chartCanvas.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        chartCanvas.width = rect.width * dpr;
+        chartCanvas.height = rect.height * dpr;
+        ctx.scale(dpr, dpr);
+        drawChart();
+      }
+
+      function drawChart() {
+        const rect = chartCanvas.getBoundingClientRect();
+        const w = rect.width;
+        const h = rect.height;
+        ctx.clearRect(0, 0, w, h);
+
+        // Grid
+        ctx.strokeStyle = 'rgba(255, 0, 0, 0.15)';
+        ctx.lineWidth = 1;
+        for (let i = 1; i < 4; i++) {
+          const y = (h / 4) * i;
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(w, y);
+          ctx.stroke();
+        }
+        for (let i = 1; i < 6; i++) {
+          const x = (w / 6) * i;
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, h);
+          ctx.stroke();
+        }
+
+        if (chartData.length < 2) return;
+
+        const max = Math.max(...chartData, 1000);
+        const stepX = w / (CHART_MAX - 1);
+
+        // Fill area
+        ctx.beginPath();
+        ctx.moveTo(0, h);
+        chartData.forEach((val, i) => {
+          const x = i * stepX;
+          const y = h - (val / max) * h * 0.85 - 5;
+          ctx.lineTo(x, y);
+        });
+        ctx.lineTo((chartData.length - 1) * stepX, h);
+        ctx.closePath();
+        const gradient = ctx.createLinearGradient(0, 0, 0, h);
+        gradient.addColorStop(0, 'rgba(255, 0, 0, 0.6)');
+        gradient.addColorStop(1, 'rgba(255, 0, 0, 0.05)');
+        ctx.fillStyle = gradient;
+        ctx.fill();
+
+        // Line
+        ctx.beginPath();
+        chartData.forEach((val, i) => {
+          const x = i * stepX;
+          const y = h - (val / max) * h * 0.85 - 5;
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        });
+        ctx.strokeStyle = '#ff1a1a';
+        ctx.lineWidth = 2;
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = '#ff0000';
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        // Latest dot
+        if (chartData.length > 0) {
+          const lastX = (chartData.length - 1) * stepX;
+          const lastVal = chartData[chartData.length - 1];
+          const lastY = h - (lastVal / max) * h * 0.85 - 5;
+          ctx.beginPath();
+          ctx.arc(lastX, lastY, 3, 0, Math.PI * 2);
+          ctx.fillStyle = '#ff2222';
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = '#ff0000';
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        }
+      }
+
+      function pushChartData(val) {
+        chartData.push(val);
+        while (chartData.length > CHART_MAX) chartData.shift();
+        drawChart();
+      }
+
+      // ==========================================
+      // ===== UPDATE STATS =====
+      // ==========================================
+      function updateStats() {
+        ppsDisplay.textContent = fmt(currentPps);
+        totalPacketsDisplay.textContent = fmt(packetCounter);
+        threadDisplay.textContent = fmt(threadCount);
+        loadDisplay.textContent = loadPercent + '%';
+        bandwidthDisplay.textContent = bandwidth + ' Mbps';
+        responseDisplay.textContent = responseTime + ' ms';
+
+        const progressValue = Math.min(100, Math.floor(progress));
+        progressFill.style.width = progressValue + '%';
+        progressPercent.textContent = progressValue + '%';
+
+        activeConnDisplay.textContent = fmt(activeConn);
+        failedConnDisplay.textContent = fmt(failedConn);
+        successRateDisplay.textContent = successRate + '%';
+        httpCodeDisplay.textContent = httpCode;
+        serverLoadDisplay.textContent = serverLoad + '%';
+        firewallDisplay.textContent = firewall;
+        cpuDisplay.textContent = cpu + '%';
+        ramDisplay.textContent = ram + '%';
+        networkDisplay.textContent = network + '%';
+      }
+
+      // ==========================================
+      // ===== UPTIME =====
+      // ==========================================
+      function startUptime() {
+        if (uptimeInterval) clearInterval(uptimeInterval);
+        uptimeInterval = setInterval(() => {
+          uptimeSeconds++;
+          const h = String(Math.floor(uptimeSeconds / 3600)).padStart(2, '0');
+          const m = String(Math.floor((uptimeSeconds % 3600) / 60)).padStart(2, '0');
+          const s = String(uptimeSeconds % 60).padStart(2, '0');
+          uptimeDisplay.textContent = `${h}:${m}:${s}`;
+        }, 1000);
+      }
+
+      // ==========================================
+      // ===== PING =====
+      // ==========================================
+      function startPing() {
+        if (pingInterval) clearInterval(pingInterval);
+        pingInterval = setInterval(() => {
+          if (isRunning) {
+            pingDisplay.textContent = (20 + Math.floor(Math.random() * 120)) + 'ms';
+          } else {
+            pingDisplay.textContent = (5 + Math.floor(Math.random() * 20)) + 'ms';
+          }
+        }, 1500);
+      }
+
+      // ==========================================
+      // ===== STATUS =====
+      // ==========================================
+      function setStatus(text, online) {
+        statusText.textContent = text;
+        statusDot.classList.toggle('offline', !online);
+      }
+
+      // ==========================================
+      // ===== RESET =====
+      // ==========================================
+      function resetState() {
+        if (intervalId) { clearInterval(intervalId); intervalId = null; }
+        isRunning = false;
+        packetCounter = 0;
+        currentPps = 0;
+        threadCount = 0;
+        loadPercent = 0;
+        progress = 0;
+        bandwidth = 0;
+        responseTime = 0;
+        activeConn = 0;
+        failedConn = 0;
+        successRate = 100;
+        httpCode = '---';
+        serverLoad = 0;
+        firewall = 'UNKNOWN';
+        cpu = 0;
+        ram = 0;
+        network = 0;
+        logCount = 0;
+        chartData.length = 0;
+        updateStats();
+        drawChart();
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+        setStatus('IDLE', true);
+        logBox.innerHTML = '';
+        logCountEl.textContent = '0';
+        addLog('[SYSTEM] Panel direset. Siap digunakan.', 'ok');
+        addLog('[INFO] Masukkan target lalu tekan SET.', 'info');
+        addLog('[INFO] Pilih method lalu tekan START.', 'info');
+      }
+
+      // ==========================================
+      // ===== SIMULATION TICK =====
+      // ==========================================
+      function simulationTick() {
+        if (!isRunning) return;
+
+        let methodMultiplier = 1;
+        switch (method) {
+          case 'HTTP': methodMultiplier = 1.0; break;
+          case 'UDP':  methodMultiplier = 1.4; break;
+          case 'TCP':  methodMultiplier = 1.2; break;
+          case 'SLOW': methodMultiplier = 0.5; break;
+          case 'DNS':  methodMultiplier = 1.6; break;
+          case 'MIX':  methodMultiplier = 1.8; break;
+        }
+
+        const basePps = 850 + Math.floor(Math.random() * 400);
+        const variation = Math.sin(Date.now() / 200) * 150;
+        currentPps = Math.max(300, Math.floor((basePps + variation) * methodMultiplier));
+
+        const packetsThisTick = Math.floor(currentPps * 0.1);
+        packetCounter += packetsThisTick;
+
+        threadCount = Math.min(1024, Math.floor(80 + (currentPps / 4) + Math.random() * 30));
+        loadPercent = Math.min(99, Math.floor((currentPps / 2000) * 100 + Math.random() * 8));
+        progress = Math.min(100, progress + 0.5 + Math.random() * 0.8);
+
+        bandwidth = (currentPps / 100).toFixed(1);
+        responseTime = Math.floor(50 + Math.random() * 250 + (loadPercent * 3));
+
+        activeConn = Math.floor(threadCount * 0.7 + Math.random() * 50);
+        failedConn = Math.floor(Math.random() * 40 + (loadPercent * 0.5));
+        successRate = Math.max(0, Math.min(100, Math.floor(100 - (failedConn / (activeConn + 1)) * 100)));
+
+        if (loadPercent > 80) httpCode = '503';
+        else if (loadPercent > 60) httpCode = '502';
+        else if (loadPercent > 40) httpCode = '429';
+        else httpCode = '200';
+
+        serverLoad = loadPercent;
+        if (serverLoad > 75) firewall = 'ACTIVE';
+        else if (serverLoad > 40) firewall = 'DETECTING';
+        else firewall = 'BYPASSED';
+
+        cpu = Math.min(99, Math.floor(loadPercent * 0.9 + Math.random() * 15));
+        ram = Math.min(99, Math.floor(loadPercent * 0.7 + Math.random() * 20));
+        network = Math.min(99, Math.floor((currentPps / 2500) * 100 + Math.random() * 10));
+
+        updateStats();
+        pushChartData(currentPps);
+
+        // Logs
+        if (Math.random() < 0.15) {
+          const messages = [
+            { msg: `Mengirim paket ke ${target} ... ${currentPps} pps`, type: 'info' },
+            { msg: `Flooding ${target} dengan ${threadCount} thread`, type: 'info' },
+            { msg: `Beban target: ${loadPercent}%`, type: 'info' },
+            { msg: `Paket terkirim: ${packetsThisTick} dalam 100ms`, type: 'info' },
+            { msg: `Memperkuat serangan ke ${target}...`, type: 'warn' },
+            { msg: `Method: ${method} | Bandwidth: ${bandwidth} Mbps`, type: 'info' },
+            { msg: `Response target: ${responseTime}ms`, type: 'warn' },
+            { msg: `HTTP ${httpCode} dari ${target}`, type: httpCode === '200' ? 'ok' : 'warn' },
+            { msg: `Firewall: ${firewall}`, type: firewall === 'BYPASSED' ? 'ok' : 'warn' },
+            { msg: `Thread pool: ${threadCount} aktif`, type: 'info' },
+            { msg: `Connection aktif: ${activeConn}`, type: 'info' },
+            { msg: `Gagal koneksi: ${failedConn}`, type: 'warn' },
+          ];
+          const pick = messages[Math.floor(Math.random() * messages.length)];
+          addLog(pick.msg, pick.type);
+        }
+
+        if (progress >= 100 && Math.random() < 0.15) {
+          addLog(`⚠️ TARGET ${target} TIDAK MERESPON`, 'error');
+        }
+
+        if (loadPercent >= 95 && Math.random() < 0.1) {
+          addLog(`💀 TARGET ${target} DOWN`, 'error');
+          showToast(`💀 ${target} DOWN`);
+        }
+      }
+
+      // ==========================================
+      // ===== START =====
+      // ==========================================
+      function startAttack() {
+        if (isRunning) return;
+        if (!target || target.trim() === '') {
+          addLog('ERROR: Target tidak boleh kosong!', 'error');
+          showToast('⚠️ Target kosong!');
+          return;
+        }
+        isRunning = true;
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+        setStatus('ATTACKING', true);
+        showToast('🚀 Attack started');
+
+        addLog(`🚀 Memulai serangan ke ${target} ...`, 'warn');
+        addLog(`🔧 Method: ${method} | Threads: auto`, 'info');
+        addLog(`📡 Node: 127.0.0.1 | Resolving target...`, 'info');
+        addLog(`✅ Target resolved: ${randomIP()}`, 'ok');
+        addLog(`⚡ Membuka ${Math.floor(Math.random()*50+50)} koneksi paralel...`, 'info');
+
+        if (intervalId) clearInterval(intervalId);
+        intervalId = setInterval(simulationTick, 100);
+      }
+
+      // ==========================================
+      // ===== STOP =====
+      // ==========================================
+      function stopAttack() {
+        if (!isRunning) return;
+        isRunning = false;
+        if (intervalId) { clearInterval(intervalId); intervalId = null; }
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+        setStatus('IDLE', true);
+        addLog(`⏸️ Serangan dihentikan. Total paket: ${fmt(packetCounter)}`, 'warn');
+        showToast('⏹ Attack stopped');
+      }
+
+      // ==========================================
+      // ===== SET TARGET =====
+      // ==========================================
+      function setTarget() {
+        const newTarget = targetInput.value.trim();
+        if (newTarget === '') {
+          addLog('Target tidak valid. Masukkan domain atau IP.', 'error');
+          showToast('⚠️ Target invalid');
+          return;
+        }
+        target = newTarget;
+        ipDisplay.textContent = randomIP();
+        addLog(`🎯 Target dikonfigurasi: ${target}`, 'ok');
+        addLog(`🌐 Resolved IP: ${ipDisplay.textContent}`, 'info');
+        showToast('🎯 Target set');
+        targetInput.blur();
+      }
+
+      // ==========================================
+      // ===== EXPORT LOG =====
+      // ==========================================
+      function exportLog() {
+        const entries = Array.from(logBox.children).map(el => el.textContent);
+        const header = `=== DDoS PANEL v4.2 LOG ===\nTarget: ${target}\nMethod: ${method}\nTotal Paket: ${packetCounter}\nDate: ${new Date().toLocaleString('id-ID')}\n\n`;
+        const blob = new Blob([header + entries.join('\n')], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `ddos-log-${Date.now()}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        addLog('💾 Log berhasil diexport.', 'ok');
+        showToast('💾 Log exported');
+      }
+
+      // ==========================================
+      // ===== BOOT SCREEN =====
+      // ==========================================
+      function runBootSequence() {
+        const bootLines = [
+          '[ OK ] Initializing kernel...',
+          '[ OK ] Loading network modules...',
+          '[ OK ] Mounting filesystem...',
+          '[ OK ] Starting services...',
+          '[ OK ] Connecting to node 127.0.0.1...',
+          '[ OK ] Loading attack methods...',
+          '[ OK ] Establishing secure channel...',
+          '[ OK ] System ready.',
+        ];
+        let i = 0;
+        const step = () => {
+          if (i < bootLines.length) {
+            const line = document.createElement('div');
+            line.className = 'boot-log-line';
+            line.textContent = bootLines[i];
+            bootLog.appendChild(line);
+            i++;
+            bootProgress.style.width = (i / bootLines.length * 100) + '%';
+            setTimeout(step, 180);
+          } else {
+            setTimeout(() => {
+              bootScreen.classList.add('hide');
+              setTimeout(() => bootScreen.remove(), 600);
+              addLog('System boot complete. Ready.', 'ok');
+            }, 400);
+          }
+        };
+        step();
+      }
+
+      // ==========================================
+      // ===== INIT =====
+      // ==========================================
+      function init() {
+        targetInput.value = 'example.com';
+        target = 'example.com';
+        ipDisplay.textContent = randomIP();
+        pingDisplay.textContent = (5 + Math.floor(Math.random() * 20)) + 'ms';
+        updateStats();
+        startUptime();
+        startPing();
+
+        // Canvas resize
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        window.addEventListener('orientationchange', () => setTimeout(resizeCanvas, 300));
+
+        // Event listeners
+        startBtn.addEventListener('click', startAttack);
+        stopBtn.addEventListener('click', stopAttack);
+        resetBtn.addEventListener('click', () => {
+          resetState();
+          targetInput.value = target;
+          addLog(`Target aktif: ${target}`, 'info');
+          showToast('⟲ Reset done');
+        });
+        exportBtn.addEventListener('click', exportLog);
+        setTargetBtn.addEventListener('click', setTarget);
+        targetInput.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') { e.preventDefault(); setTarget(); }
+        });
+
+        methodBtns.forEach(btn => {
+          btn.addEventListener('click', () => {
+            methodBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            method = btn.dataset.method;
+            addLog(`⚙️ Method diubah: ${method}`, 'info');
+            showToast(`⚙️ Method: ${method}`);
+          });
+        });
+
+        // Prevent pinch zoom on mobile
+        document.addEventListener('gesturestart', (e) => e.preventDefault());
+        document.addEventListener('dblclick', (e) => e.preventDefault(), { passive: false });
+
+        // Initial logs
+        addLog('Panel dimuat. Sistem siap.', 'ok');
+        addLog('Menunggu konfigurasi target...', 'info');
+
+        // Boot animation
+        runBootSequence();
+      }
+
+      // Wait for DOM
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+</body>
+</html>
